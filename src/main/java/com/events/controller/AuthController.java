@@ -1,6 +1,10 @@
-package com.events.JWT;
+package com.events.controller;
 
 import com.events.DTO.RegistrationUserDto;
+import com.events.service.AuthService;
+import com.events.JWT.JwtRequest;
+import com.events.JWT.JwtResponse;
+import com.events.JWT.RefreshJwtRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

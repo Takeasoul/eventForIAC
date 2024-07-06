@@ -39,7 +39,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/secured").hasAuthority("ROLE_TEACHER");
                     request.requestMatchers("/info").authenticated();
-                    request.requestMatchers("/admin").permitAll();
+                    request.requestMatchers("/login").permitAll();
+                    request.requestMatchers("/email").permitAll();
                     request.requestMatchers("/api/auth/login").permitAll();
                     request.requestMatchers("/api/auth/token").permitAll();
                     request.anyRequest().permitAll();

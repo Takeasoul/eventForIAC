@@ -1,6 +1,9 @@
-package com.events.JWT;
+package com.events.service;
 
 import com.events.DTO.RegistrationUserDto;
+import com.events.repositories.RoleRepository;
+import com.events.entity.User;
+import com.events.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

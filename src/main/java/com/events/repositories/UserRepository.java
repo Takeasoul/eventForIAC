@@ -1,5 +1,6 @@
-package com.events.JWT;
+package com.events.repositories;
 
+import com.events.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

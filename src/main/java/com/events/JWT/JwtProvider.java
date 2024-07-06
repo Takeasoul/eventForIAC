@@ -1,5 +1,6 @@
 package com.events.JWT;
 
+import com.events.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

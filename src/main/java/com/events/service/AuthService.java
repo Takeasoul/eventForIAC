@@ -1,7 +1,9 @@
-package com.events.JWT;
+package com.events.service;
 
 import com.events.DTO.RegistrationUserDto;
 import com.events.DTO.UserDto;
+import com.events.JWT.*;
+import com.events.entity.User;
 import com.events.exceptions.AppError;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;

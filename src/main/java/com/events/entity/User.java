@@ -1,6 +1,5 @@
-package com.events.JWT;
+package com.events.entity;
 
-import com.events.entity.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;

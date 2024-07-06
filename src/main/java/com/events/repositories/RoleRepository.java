@@ -1,4 +1,4 @@
-package com.events.JWT;
+package com.events.repositories;
 
 import com.events.entity.Role;
 import org.springframework.data.repository.CrudRepository;
