@@ -1,10 +1,10 @@
 package JWT;
 
+import entity.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import ru.kafedra.spring.Securityjwt.entity.Role;
 
 import java.util.Collection;
 

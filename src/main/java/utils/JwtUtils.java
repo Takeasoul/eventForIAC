@@ -1,11 +1,13 @@
 package utils;
 
 
+import JWT.JwtAuthentication;
+import entity.Role;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.kafedra.spring.Securityjwt.JWT.JwtAuthentication;
-import ru.kafedra.spring.Securityjwt.entity.Role;
+
+
 
 import java.util.*;
 

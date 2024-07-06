@@ -1,5 +1,6 @@
 package JWT;
 
+import DTO.RegistrationUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,12 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kafedra.spring.Securityjwt.Admin.UserResponseAdmin;
-import ru.kafedra.spring.Securityjwt.DTO.RegistrationUserDto;
-import ru.kafedra.spring.Securityjwt.repositories.RoleRepository;
-import ru.kafedra.spring.Securityjwt.repositories.UserRepository;
-import ru.kafedra.spring.Securityjwt.services.StudentService;
-import ru.kafedra.spring.Securityjwt.services.TeacherServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,15 +64,5 @@ public class UserService implements UserDetailsService {
         return ResponseEntity.ok("ВСЕ ГУД");
     }
 
-    public ResponseEntity<?> findAll(TeacherServices teacherServices, StudentService studentService)
-    {
-        List<User> users = userRepository.findAll();
-        List<UserResponseAdmin> userResponseAdmins = new ArrayList<>();
-        for(User user: users)
-            userResponseAdmins.add(new UserResponseAdmin().generateResponse(user, studentService, teacherServices ));
-        System.out.println("");
-        return ResponseEntity.ok(userResponseAdmins);
-
-    }
 
 }

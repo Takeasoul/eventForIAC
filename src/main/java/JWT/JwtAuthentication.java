@@ -1,11 +1,11 @@
 package JWT;
 
+import entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ru.kafedra.spring.Securityjwt.entity.Role;
 
 import java.util.Collection;
 import java.util.Set;

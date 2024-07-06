@@ -1,38 +1,27 @@
 package JWT;
 
+import DTO.RegistrationUserDto;
+import DTO.UserDto;
+import exceptions.AppError;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.security.auth.message.AuthException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.kafedra.spring.Securityjwt.DTO.*;
-import ru.kafedra.spring.Securityjwt.entity.Student;
-import ru.kafedra.spring.Securityjwt.entity.Teacher;
-import ru.kafedra.spring.Securityjwt.exceptions.AppError;
-import ru.kafedra.spring.Securityjwt.services.StudentService;
-import ru.kafedra.spring.Securityjwt.services.TeacherServices;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 
 @Service
 @RequiredArgsConstructor
 public class AuthService<JwtAuthentication> {
     private final UserService userService;
-
-    private final TeacherServices teacherServices;
-
-    private final StudentService studentService;
-
-
-
 
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
@@ -121,67 +110,6 @@ public class AuthService<JwtAuthentication> {
         User user = userService.createNewUser(registrationUserDto);
 
         return ResponseEntity.ok(new UserDto(user.getId(), user.getLogin(), user.getPassword(), user.getRoles()));
-    }
-
-    public ResponseEntity<?> createNewTeacher(@RequestBody RegistrationTeacherDto registrationTeacherDto) {
-        if(userService.findByLogin(registrationTeacherDto.getUsername()).isPresent()) {
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Такой пользователь уже существует"), HttpStatus.BAD_REQUEST);
-        }
-        Teacher teacher = teacherServices.createNewTeacher(registrationTeacherDto);
-
-        return ResponseEntity.ok(200);
-    }
-
-    public  ResponseEntity<?> TeacherInfo(Long id)
-    {
-        return  ResponseEntity.ok(teacherServices.teacherInfo(id));
-    }
-
-    public ResponseEntity<?> editTeacher(@RequestBody TeacherDto teacherDto, Long id) {
-        if(teacherServices.findById(id).isEmpty()) {
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Такого преподавателя не существует"), HttpStatus.BAD_REQUEST);
-        }
-       teacherServices.editTeacher(teacherDto, id);
-
-        return ResponseEntity.ok(200);
-    }
-
-
-    public ResponseEntity<?> createNewStudent(@RequestBody RegistrationStudentDto registrationStudentDto) {
-        if(userService.findByLogin(registrationStudentDto.getLogin()).isPresent()) {
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Такой пользователь уже существует"), HttpStatus.BAD_REQUEST);
-        }
-        Student student = studentService.createNewStudent(registrationStudentDto);
-
-        return ResponseEntity.ok(200);
-    }
-
-    public  ResponseEntity<?> StudentInfo(Long id)
-    {
-        return  ResponseEntity.ok(studentService.studentInfo(id));
-    }
-
-    public ResponseEntity<?> editStudent(@RequestBody RegistrationStudentDto registrationStudentDto, Long id) {
-        if(studentService.findById(id).isEmpty()) {
-            return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Такого студента не существует"), HttpStatus.BAD_REQUEST);
-        }
-        studentService.editStudent(registrationStudentDto, id);
-
-        return ResponseEntity.ok(200);
-    }
-
-    public  ResponseEntity<?> FindStudentByGroup(String group)
-    {
-        List<Student> studentList = studentService.findByGroup(group);
-        studentList.forEach(student -> student.setUser(null));
-        return  ResponseEntity.ok(studentList);
-    }
-
-    public  ResponseEntity<?> FindStudentByCourse(Integer course)
-    {
-        List<Student> studentList = studentService.findByCourse(course);
-        studentList.forEach(student -> student.setUser(null));
-        return  ResponseEntity.ok(studentList);
     }
 
 
