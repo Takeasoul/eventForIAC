@@ -17,12 +17,13 @@ public class EmailService {
     @Autowired
     public JavaMailSender emailSender;
 
-
     public void sendSimpleEmail(String toAddress, String subject, String message) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        
         simpleMailMessage.setTo(toAddress);
         simpleMailMessage.setSubject(subject);
         simpleMailMessage.setText(message);
+
         emailSender.send(simpleMailMessage);
     }
 

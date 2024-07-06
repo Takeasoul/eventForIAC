@@ -7,15 +7,17 @@ spring:
     password: admin
     driver-class-name: org.postgresql.Driver
   mail:
-    host: smtp.yandex.ru
+    host: smtp.gmail.com
     port: 587
-    username: iac.events
-    password: 001iac003
+    username: iac.spb.events@gmail.com
+    password: ylyalyxoujomkqgk
     properties:
-      smtp:
-        auth: true
-        starttls:
-          enable: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 jwt:
   secret:
