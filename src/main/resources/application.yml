@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: events
+  datasource:
+    url: jdbc:postgresql://localhost:5432/event
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  mail:
+    host: smtp.yandex.ru
+    port: 587
+    username: iac.events
+    password: 001iac003
+    properties:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+
+jwt:
+  secret:
+    access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w
+    refresh: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
