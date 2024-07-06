@@ -1,6 +1,6 @@
-package DTO;
+package com.events.DTO;
 
-import entity.Role;
+import com.events.entity.Role;
 import lombok.Data;
 
 

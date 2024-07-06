@@ -1,6 +1,6 @@
-package JWT;
+package com.events.JWT;
 
-import entity.Role;
+import com.events.entity.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

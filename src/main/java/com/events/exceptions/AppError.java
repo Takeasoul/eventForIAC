@@ -1,4 +1,4 @@
-package exceptions;
+package com.events.exceptions;
 
 import lombok.Data;
 

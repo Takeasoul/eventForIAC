@@ -1,4 +1,4 @@
-package JWT;
+package com.events.JWT;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.Jwts;

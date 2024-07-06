@@ -1,8 +1,8 @@
-package utils;
+package com.events.utils;
 
 
-import JWT.JwtAuthentication;
-import entity.Role;
+import com.events.JWT.JwtAuthentication;
+import com.events.entity.Role;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

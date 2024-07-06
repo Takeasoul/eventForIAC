@@ -1,4 +1,4 @@
-package entity;
+package com.events.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

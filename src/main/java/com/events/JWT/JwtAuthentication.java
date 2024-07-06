@@ -1,6 +1,6 @@
-package JWT;
+package com.events.JWT;
 
-import entity.Role;
+import com.events.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;

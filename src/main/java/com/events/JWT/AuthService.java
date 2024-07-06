@@ -1,10 +1,9 @@
-package JWT;
+package com.events.JWT;
 
-import DTO.RegistrationUserDto;
-import DTO.UserDto;
-import exceptions.AppError;
+import com.events.DTO.RegistrationUserDto;
+import com.events.DTO.UserDto;
+import com.events.exceptions.AppError;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.security.auth.message.AuthException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

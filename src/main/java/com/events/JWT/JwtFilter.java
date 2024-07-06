@@ -1,4 +1,6 @@
-package JWT;
+package com.events.JWT;
+
+
 
 
 import io.jsonwebtoken.Claims;
@@ -15,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import utils.JwtUtils;
+import com.events.utils.JwtUtils;
 
 import java.io.IOException;
 

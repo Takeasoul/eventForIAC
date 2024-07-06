@@ -1,4 +1,4 @@
-package utils;//package ru.kafedra.spring.Securityjwt.utils;
+package com.events.utils;//package ru.kafedra.spring.Securityjwt.utils;
 //
 //package ru.kafedra.spring.Securityjwt.utils;
 //

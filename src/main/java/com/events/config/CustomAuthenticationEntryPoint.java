@@ -1,4 +1,4 @@
-package config;
+package com.events.config;
 
 
 import io.jsonwebtoken.ExpiredJwtException;

@@ -1,6 +1,6 @@
-package JWT;
+package com.events.JWT;
 
-import entity.Role;
+import com.events.entity.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
