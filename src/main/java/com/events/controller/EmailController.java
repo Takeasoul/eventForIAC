@@ -1,6 +1,7 @@
 package com.events.controller;
 
 
+import com.events.generator.QRCodeGenerator;
 import com.events.service.EmailService;
 import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 @RestController
@@ -33,8 +35,12 @@ public class EmailController {
             LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+        File code =  qrCodeGenerator.generateQrCode("https://www.youtube.com/watch?v=3Schv9lSb0g&ab_channel=jinujawadm");
+        System.out.println(code.canRead());
 
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
+
     }
 
     @GetMapping(value = "/simple-order-email/{user-email}")
