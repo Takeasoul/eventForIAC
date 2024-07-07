@@ -3,11 +3,17 @@ package com.events.controller;
 import com.events.DTO.EventCreateDto;
 import com.events.DTO.EventRegistrationDto;
 import com.events.entity.Event;
+import com.events.entity.Event_Member;
+import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
 import com.events.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ public class EventController {
 
     private final EventService eventService;
     private final EventRepository eventRepository;
+    private final EventMemberRepository eventMemberRepository;
 
 
     @PostMapping("/createEvent")
@@ -46,5 +53,31 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<?> approve(@PathVariable Long id) {
 
+        eventService.approvemember(id);
+        return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}/members")
+    public ResponseEntity<?> getMembers(@PathVariable Long id) {
+        List<Event_Member> members = eventService.findMembersByEventId(id);
+        if (members.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(members);
+    }
+
+    @GetMapping("/{id}/info")
+    public ResponseEntity<?> getEventInfo(@PathVariable Long id) {
+        Optional<Event> event = eventService.findById(id);
+        if (event.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(event);
+    }
+
+
+
+}

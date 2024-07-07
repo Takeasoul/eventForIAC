@@ -44,5 +44,5 @@ public class Event_Member {
     private Boolean approved;
 
     @Column(name = "event_id")
-    private int event_id;
+    private int eventId;
 }

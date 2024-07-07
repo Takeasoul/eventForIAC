@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
+
 @Service
 @RequiredArgsConstructor
 public class EventService {
@@ -57,7 +61,7 @@ public class EventService {
         eventMember.setPhone(eventRegistrationDto.getPhone());
         eventMember.setClubmember(eventRegistrationDto.getClubmember());
         eventMember.setApproved(false);
-        eventMember.setEvent_id(id);
+        eventMember.setEventId(id);
 
         eventMember = eventMemberRepository.save(eventMember);
     }
@@ -67,5 +71,13 @@ public class EventService {
         assert eventMember != null;
         eventMember.setApproved(true);
 
+    }
+
+    public List<Event_Member> findMembersByEventId(Long eventId) {
+        return eventMemberRepository.findByEventId(eventId);
+    }
+
+    public Optional<Event> findById(Long id) {
+        return eventRepository.findById(id);
     }
 }
