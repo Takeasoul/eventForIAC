@@ -76,6 +76,15 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
+    @GetMapping("/{id}/members/{memberid}")
+    public ResponseEntity<?> getCurrentMembers(@PathVariable Long id) {
+        Optional<Event> member = eventService.findById(id);
+        if (member.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(member);
+    }
+
 
 
 }
