@@ -14,7 +14,7 @@ public class Event_Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    int id;
+    private Long id;
 
     @Column(name = "firstname")
     private String firstname;
@@ -44,5 +44,5 @@ public class Event_Member {
     private Boolean approved;
 
     @Column(name = "event_id")
-    private int eventId;
+    private Long eventId;
 }
