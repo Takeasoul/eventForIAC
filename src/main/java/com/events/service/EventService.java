@@ -4,11 +4,14 @@ import com.events.DTO.EventCreateDto;
 import com.events.DTO.EventRegistrationDto;
 import com.events.entity.Event;
 import com.events.entity.Event_Member;
+import com.events.exceptions.AppError;
 import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +52,14 @@ public class EventService {
         return event;
     }
 
-    public void regeventmember(EventRegistrationDto eventRegistrationDto, int id) {
+    public ResponseEntity<?> regeventmember(EventRegistrationDto eventRegistrationDto, Long id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        if (!event.getReg_open()) { // Изменено условие на отрицательное
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AppError(HttpStatus.BAD_REQUEST.value(), "Registration for this event is closed"));
+        }
 
         Event_Member eventMember = new Event_Member();
         eventMember.setFirstname(eventRegistrationDto.getFirstname());
@@ -63,7 +73,8 @@ public class EventService {
         eventMember.setApproved(false);
         eventMember.setEventId(id);
 
-        eventMember = eventMemberRepository.save(eventMember);
+        eventMemberRepository.save(eventMember);
+        return ResponseEntity.ok(new AppError(HttpStatus.OK.value(), "Registration successful"));
     }
 
     public void approvemember(Long id) {

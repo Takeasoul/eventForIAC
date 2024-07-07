@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -47,10 +48,8 @@ public class EventController {
     }
 
     @PostMapping("/{id}/register")
-    public ResponseEntity<?> registerEvent(@PathVariable int id, @RequestBody EventRegistrationDto eventRegistrationDto) {
-
-        eventService.regeventmember(eventRegistrationDto, id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> registerEvent(@PathVariable Long id, @RequestBody EventRegistrationDto eventRegistrationDto) {
+        return  eventService.regeventmember(eventRegistrationDto, id);
     }
 
     @PostMapping("/approve/{id}")
@@ -76,6 +75,15 @@ public class EventController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(event);
+    }
+
+    @GetMapping("/{id}/members/{memberid}")
+    public ResponseEntity<?> getCurrentMembers(@PathVariable Long id, @PathVariable Long memberid) {
+        Optional<Event> member = eventService.findById(memberid);
+        if (member.isEmpty() && Objects.equals(memberid, id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(member);
     }
 
 
