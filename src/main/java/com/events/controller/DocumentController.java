@@ -32,4 +32,17 @@ public class DocumentController {
         return ResponseEntity.ok().headers(headers).
                 body(new InputStreamResource(bis));
     }
+
+    @GetMapping(value = "/pdf",
+            produces = "application/vnd.openxmlformats-"
+                    + "officedocument.wordprocessingml.document")
+    public ResponseEntity<InputStreamResource> pdf()
+            throws IOException, InvalidFormatException {
+        ByteArrayInputStream bis = DocumentService.generatePdf("qr.png");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition",
+                "inline; filename=mydoc.pdf");
+        return ResponseEntity.ok().headers(headers).
+                body(new InputStreamResource(bis));
+    }
 }

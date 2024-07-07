@@ -1,12 +1,17 @@
 package com.events.service;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -16,6 +21,39 @@ import java.nio.file.Paths;
 public class DocumentService {
     private final static Path root = Paths.get("src/main/resources/static/qr");
 
+
+    public static ByteArrayInputStream generatePdf(String qrFilename)
+            throws FileNotFoundException, IOException,
+            InvalidFormatException {
+        try {
+            PDDocument pdDoc = new PDDocument();
+            PDPage page = new PDPage();
+            // add page to the document
+            pdDoc.addPage(page);
+            // write to a page content stream
+            try(PDPageContentStream cs = new PDPageContentStream(pdDoc, page)){
+                cs.beginText();
+                PDFont font = PDType1Font.HELVETICA_BOLD;
+                // setting font family and font size
+                cs.setFont(font, 14);
+                // Text color in PDF
+                cs.setNonStrokingColor(Color.BLUE);
+                // set offset from where content starts in PDF
+                cs.newLineAtOffset(20, 750);
+                cs.showText("Hello! This PDF is created using PDFBox");
+                cs.newLine();
+                cs.endText();
+            }
+            // save and close PDF document
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            pdDoc.save(b);
+            pdDoc.close();
+            return new ByteArrayInputStream(b.toByteArray());
+        } catch(IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static ByteArrayInputStream generateWord(String qrFilename)
             throws FileNotFoundException, IOException,
