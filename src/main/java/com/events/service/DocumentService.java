@@ -3,6 +3,7 @@ package com.events.service;
 import ch.qos.logback.core.util.Loader;
 import com.events.generator.QRCodeGenerator;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -22,13 +23,16 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class DocumentService {
-    private final static Path root = Paths.get("src/main/resources/static/qr");
+    private final Path root = Paths.get("src/main/resources/static/qr");
 
+    private final EventService eventService;
 
-    public static ByteArrayInputStream generatePdf(String qrFilename)
+    public ByteArrayInputStream generatePdf(String qrFilename)
             throws FileNotFoundException, IOException,
             InvalidFormatException {
         try {
@@ -65,21 +69,11 @@ public class DocumentService {
         }
     }
 
-    public static ByteArrayInputStream generateWord(String qrFilename)
+    public ByteArrayInputStream generateWordBadge(UUID eventMemberId)
             throws FileNotFoundException, IOException,
             InvalidFormatException {
 
-        Resource resource;
-        try {
-            Path file = root.resolve(qrFilename);
-            resource = new UrlResource(file.toUri());
 
-            if (!(resource.exists() || resource.isReadable())) {
-                throw new RuntimeException("Could not read the file!");
-            }
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Error: " + e.getMessage());
-        }
 
         try (XWPFDocument doc = new XWPFDocument()) {
 
@@ -114,31 +108,7 @@ public class DocumentService {
             r3.setText("Table");
             r3.setFontFamily("Arial");
 
-            XWPFTable table = doc.createTable();
-            // Creating first Row
-            XWPFTableRow row1 = table.getRow(0);
-            row1.getCell(0).setText("Java, Scala");
-            row1.addNewTableCell().setText("PHP, Flask");
-            row1.addNewTableCell().setText("Ruby, Rails");
 
-            // Creating second Row
-            XWPFTableRow row2 = table.createRow();
-            row2.getCell(0).setText("C, C ++");
-            row2.getCell(1).setText("Python, Kotlin");
-            row2.getCell(2).setText("Android, React");
-
-            // add png image
-            XWPFRun r4 = doc.createParagraph().createRun();
-            r4.addBreak();
-            XWPFParagraph p = doc.createParagraph();
-            XWPFRun r = p.createRun();
-            try (FileInputStream is = new FileInputStream(resource.getFile())) {
-                r.addPicture(is, Document.PICTURE_TYPE_PNG, resource.getFilename(),
-                        Units.toEMU(500), Units.toEMU(200));
-
-            } catch (org.apache.poi.openxml4j.exceptions.InvalidFormatException e) {
-                throw new RuntimeException(e);
-            }
 
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             doc.write(b);

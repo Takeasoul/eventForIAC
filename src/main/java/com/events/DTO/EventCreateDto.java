@@ -6,11 +6,12 @@ import lombok.Data;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 public class EventCreateDto {
-    private int event_id;
+    private UUID event_id;
     private String event_name;
     private String event_summary;
     private Date event_date;

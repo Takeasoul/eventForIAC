@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -35,12 +36,12 @@ public class EventService {
         return event;
     }
 
-    public ResponseEntity<?> deleteById(Long id) {
+    public ResponseEntity<?> deleteById(UUID id) {
         eventRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    public Event editEvent(EventCreateDto eventCreateDto, Long id) {
+    public Event editEvent(EventCreateDto eventCreateDto, UUID id) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
             event.setEvent_name(eventCreateDto.getEvent_name());
@@ -52,7 +53,7 @@ public class EventService {
         return event;
     }
 
-    public ResponseEntity<?> regeventmember(EventRegistrationDto eventRegistrationDto, Long id) {
+    public ResponseEntity<?> regeventmember(EventRegistrationDto eventRegistrationDto, UUID id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
 
@@ -77,18 +78,18 @@ public class EventService {
         return ResponseEntity.ok(new AppError(HttpStatus.OK.value(), "Registration successful"));
     }
 
-    public void approvemember(Long id) {
+    public void approvemember(UUID id) {
         Event_Member eventMember = eventMemberRepository.findById(id).orElse(null);
         assert eventMember != null;
         eventMember.setApproved(true);
 
     }
 
-    public List<Event_Member> findMembersByEventId(Long eventId) {
+    public List<Event_Member> findMembersByEventId(UUID eventId) {
         return eventMemberRepository.findByEventId(eventId);
     }
 
-    public Optional<Event> findById(Long id) {
+    public Optional<Event> findById(UUID id) {
         return eventRepository.findById(id);
     }
 }

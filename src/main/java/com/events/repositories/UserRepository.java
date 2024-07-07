@@ -6,13 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, UUID> {
 
     Optional<User> findUserByLogin(String username);
 
     List<User> findAll();
 
-    Optional<User> findUserById(Long id);
+    Optional<User> findUserById(UUID id);
 }

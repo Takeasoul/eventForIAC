@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @RestController
@@ -33,12 +34,12 @@ public class EventController {
     }
 
     @PostMapping("/deleteEvent/{id}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long id){
+    public ResponseEntity<?> deleteEvent(@PathVariable UUID id){
         return eventService.deleteById(id);
     }
 
     @PostMapping("/editEvent/{id}")
-    public ResponseEntity<Event> editById(@PathVariable Long id, @RequestBody EventCreateDto eventCreateDto) {
+    public ResponseEntity<Event> editById(@PathVariable UUID id, @RequestBody EventCreateDto eventCreateDto) {
         Event updatedEvent = eventService.editEvent(eventCreateDto, id);
         if (updatedEvent != null) {
             return ResponseEntity.ok(updatedEvent);
@@ -48,19 +49,19 @@ public class EventController {
     }
 
     @PostMapping("/{id}/register")
-    public ResponseEntity<?> registerEvent(@PathVariable Long id, @RequestBody EventRegistrationDto eventRegistrationDto) {
+    public ResponseEntity<?> registerEvent(@PathVariable UUID id, @RequestBody EventRegistrationDto eventRegistrationDto) {
         return  eventService.regeventmember(eventRegistrationDto, id);
     }
 
     @PostMapping("/approve/{id}")
-    public ResponseEntity<?> approve(@PathVariable Long id) {
+    public ResponseEntity<?> approve(@PathVariable UUID id) {
 
         eventService.approvemember(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/members")
-    public ResponseEntity<?> getMembers(@PathVariable Long id) {
+    public ResponseEntity<?> getMembers(@PathVariable UUID id) {
         List<Event_Member> members = eventService.findMembersByEventId(id);
         if (members.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -69,7 +70,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}/info")
-    public ResponseEntity<?> getEventInfo(@PathVariable Long id) {
+    public ResponseEntity<?> getEventInfo(@PathVariable UUID id) {
         Optional<Event> event = eventService.findById(id);
         if (event.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -78,7 +79,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}/members/{memberid}")
-    public ResponseEntity<?> getCurrentMembers(@PathVariable Long id, @PathVariable Long memberid) {
+    public ResponseEntity<?> getCurrentMembers(@PathVariable UUID id, @PathVariable UUID memberid) {
         Optional<Event> member = eventService.findById(memberid);
         if (member.isEmpty() && Objects.equals(memberid, id)) {
             return ResponseEntity.noContent().build();

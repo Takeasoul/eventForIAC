@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +32,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByLogin(login);
     }
 
-    public Optional<User> findById(Long id){
+    public Optional<User> findById(UUID id){
         return userRepository.findUserById(id);
     }
 
@@ -59,7 +60,7 @@ public class UserService implements UserDetailsService {
 
 
 
-    public ResponseEntity<?> deleteUser(Long id)
+    public ResponseEntity<?> deleteUser(UUID id)
     {
         userRepository.deleteById(id);
         return ResponseEntity.ok("ВСЕ ГУД");

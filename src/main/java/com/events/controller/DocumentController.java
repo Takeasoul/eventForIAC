@@ -21,12 +21,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @CrossOrigin
 public class DocumentController {
+
+    private final DocumentService documentService;
+
     @GetMapping(value = "/word",
             produces = "application/vnd.openxmlformats-"
                     + "officedocument.wordprocessingml.document")
     public ResponseEntity<InputStreamResource> word()
             throws IOException, InvalidFormatException {
-        ByteArrayInputStream bis = DocumentService.generateWord("qr.png");
+        ByteArrayInputStream bis = documentService.generateWordBadge("qr.png");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
                 "inline; filename=mydoc.docx");
@@ -39,7 +42,7 @@ public class DocumentController {
                     + "officedocument.wordprocessingml.document")
     public ResponseEntity<InputStreamResource> pdf()
             throws IOException, InvalidFormatException {
-        ByteArrayInputStream bis = DocumentService.generatePdf("qr.png");
+        ByteArrayInputStream bis = documentService.generatePdf("qr.png");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
                 "inline; filename=mydoc.pdf");
@@ -53,7 +56,7 @@ public class DocumentController {
                     + "officedocument.wordprocessingml.document")
     public ResponseEntity<InputStreamResource> generatePdf(Event_Member eventMember)
             throws IOException, InvalidFormatException {
-        ByteArrayInputStream bis = DocumentService.generatePdf("qr.png");
+        ByteArrayInputStream bis = documentService.generatePdf("qr.png");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
                 "inline; filename=mydoc.pdf");

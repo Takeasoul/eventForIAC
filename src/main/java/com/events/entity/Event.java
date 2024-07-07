@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -12,9 +13,9 @@ public class Event {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "event_id")
-    private Long event_id;
+    private UUID event_id;
 
     @Column(name = "event_name")
     private String event_name;

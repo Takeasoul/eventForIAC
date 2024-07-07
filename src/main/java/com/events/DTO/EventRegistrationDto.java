@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.UUID;
 
 
 @AllArgsConstructor
 @Data
 public class EventRegistrationDto {
-    private int id;
+    private UUID id;
     private String firstname;
     private String middlename;
     private String lastname;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -12,9 +13,9 @@ public class Event_Member {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
-    private Long id;
+    private UUID id;
 
     @Column(name = "firstname")
     private String firstname;
@@ -44,5 +45,5 @@ public class Event_Member {
     private Boolean approved;
 
     @Column(name = "event_id")
-    private Long eventId;
+    private UUID eventId;
 }

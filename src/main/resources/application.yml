@@ -1,11 +1,17 @@
 spring:
+  jpa:
+    generate-ddl: true
   application:
     name: events
   datasource:
     url: jdbc:postgresql://localhost:5432/event
     username: postgres
-    password: kiryasay
+    password: admin
     driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: event_schema
+      connection-init-sql: CREATE SCHEMA IF NOT EXISTS event_schema
+      connection-timeout: 10000
   mail:
     host: smtp.gmail.com
     port: 587
