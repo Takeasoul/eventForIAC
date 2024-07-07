@@ -3,6 +3,7 @@ package com.events.controller;
 
 import com.events.service.EmailService;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,14 @@ import java.io.FileNotFoundException;
 
 @RestController
 @RequestMapping("/email")
+@CrossOrigin()
+@RequiredArgsConstructor
 public class EmailController {
 
     private static final Logger LOG = LoggerFactory.getLogger(EmailController.class);
 
-    @Autowired
-    EmailService emailService;
+
+    private final EmailService emailService;
 
     @GetMapping(value = "/simple-email/{user-email}")
     public @ResponseBody ResponseEntity sendSimpleEmail(@PathVariable("user-email") String email) {
