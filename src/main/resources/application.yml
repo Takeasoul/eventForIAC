@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/event
     username: postgres
-    password: admin
+    password: kiryasay
     driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com

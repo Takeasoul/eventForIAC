@@ -38,9 +38,6 @@ public class EmailController {
             LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-        File code =  qrCodeGenerator.generateQrCode("https://www.youtube.com/watch?v=3Schv9lSb0g&ab_channel=jinujawadm");
-        System.out.println(code.canRead());
 
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
 

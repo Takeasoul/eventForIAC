@@ -1,5 +1,6 @@
 package com.events.controller;
 
+import com.events.entity.Event_Member;
 import com.events.service.DocumentService;
 import com.events.service.EmailService;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -37,6 +38,20 @@ public class DocumentController {
             produces = "application/vnd.openxmlformats-"
                     + "officedocument.wordprocessingml.document")
     public ResponseEntity<InputStreamResource> pdf()
+            throws IOException, InvalidFormatException {
+        ByteArrayInputStream bis = DocumentService.generatePdf("qr.png");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition",
+                "inline; filename=mydoc.pdf");
+        return ResponseEntity.ok().headers(headers).
+                body(new InputStreamResource(bis));
+    }
+
+
+    @GetMapping(value = "/pdf2",
+            produces = "application/vnd.openxmlformats-"
+                    + "officedocument.wordprocessingml.document")
+    public ResponseEntity<InputStreamResource> generatePdf(Event_Member eventMember)
             throws IOException, InvalidFormatException {
         ByteArrayInputStream bis = DocumentService.generatePdf("qr.png");
         HttpHeaders headers = new HttpHeaders();
