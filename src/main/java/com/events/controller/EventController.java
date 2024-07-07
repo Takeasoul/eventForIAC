@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -77,9 +78,9 @@ public class EventController {
     }
 
     @GetMapping("/{id}/members/{memberid}")
-    public ResponseEntity<?> getCurrentMembers(@PathVariable Long id) {
-        Optional<Event> member = eventService.findById(id);
-        if (member.isEmpty()) {
+    public ResponseEntity<?> getCurrentMembers(@PathVariable Long id, @PathVariable Long memberid) {
+        Optional<Event> member = eventService.findById(memberid);
+        if (member.isEmpty() && Objects.equals(memberid, id)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(member);
