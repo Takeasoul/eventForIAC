@@ -1,6 +1,8 @@
 package com.events.service;
 
 import ch.qos.logback.core.util.Loader;
+import com.events.entity.Event;
+import com.events.entity.Event_Member;
 import com.events.generator.QRCodeGenerator;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.aot.AotServices;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,7 +36,7 @@ public class DocumentService {
 
     private final EventService eventService;
 
-    public ByteArrayInputStream generatePdf(String qrFilename)
+    public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
             throws FileNotFoundException, IOException,
             InvalidFormatException {
         try {
@@ -43,20 +47,29 @@ public class DocumentService {
             // write to a page content stream
             try(PDPageContentStream cs = new PDPageContentStream(pdDoc, page)){
                 cs.beginText();
-                PDFont font = PDType1Font.HELVETICA_BOLD;
+                Resource resource = new ClassPathResource("/static/arialmt.ttf");
+                PDType0Font font = PDType0Font.load(pdDoc, resource.getInputStream());
                 // setting font family and font size
                 cs.setFont(font, 14);
                 // Text color in PDF
                 cs.setNonStrokingColor(Color.BLUE);
                 // set offset from where content starts in PDF
                 cs.newLineAtOffset(20, 750);
-                cs.showText("Hello! This PDF is created using PDFBox");
-                cs.newLine();
+                String eventName;
+                if (event.isPresent()) {
+                    eventName = event.get().getEvent_name();
+                }
+                else  eventName = "ОШИБКА";
+
+                String text = String.format("Hello %s %s %s! You are invited to the event: %s",
+                        eventMember.getFirstname(), eventMember.getMiddlename(), eventMember.getLastname(),
+                        eventName);
+                cs.showText(text);
                 cs.endText();
                 QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
                 BufferedImage qrCodeImage = qrCodeGenerator.generateQrCode("https://www.youtube.com/watch?v=QGx0pP3Uk0c&ab_channel=%D0%90%D1%81%D0%B0%D1%84%D1%8C%D0%B5%D0%B2.%D0%96%D0%B8%D0%B7%D0%BD%D1%8C");
                 PDImageXObject pdImage = LosslessFactory.createFromImage(pdDoc, qrCodeImage);
-                cs.drawImage(pdImage, 500, 500);
+                cs.drawImage(pdImage, 200, -10);
             }
             // save and close PDF document
             ByteArrayOutputStream b = new ByteArrayOutputStream();
