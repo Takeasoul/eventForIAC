@@ -31,12 +31,12 @@ public class DocumentController {
     @Autowired
     EventMemberRepository eventMemberRepository;
 
-    @GetMapping(value = "/word",
+    @GetMapping(value = "/word/{member-id}",
             produces = "application/vnd.openxmlformats-"
                     + "officedocument.wordprocessingml.document")
-    public ResponseEntity<InputStreamResource> word()
+    public ResponseEntity<InputStreamResource> word(@PathVariable("member-id") UUID memberId)
             throws IOException, InvalidFormatException {
-        ByteArrayInputStream bis = documentService.generateWordBadge(UUID.fromString("6c81ae12-7bac-4eab-ae1a-160743edbdaf"));
+        ByteArrayInputStream bis = documentService.generateWordBadge(memberId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
                 "inline; filename=mydoc.docx");
