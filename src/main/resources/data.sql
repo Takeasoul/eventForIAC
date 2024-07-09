@@ -13,4 +13,5 @@ INSERT INTO event_schema.users_roles VALUES
                                    ('6c81ae12-7bac-4eab-ae1a-160743edbdaf','d2dd39a5-b13c-426f-aa29-da82bb6dbf29');
 
 INSERT INTO event_schema.event_members VALUES
-                                    ('b90dde83-0ceb-4fa1-b174-6dbeceddbc34',true,true,'company','email','603b961f-a315-4c6e-9305-bea0ef60a98c','firstname','lastname','middlename','89999999999','0');
+                                    ('b90dde83-0ceb-4fa1-b174-6dbeceddbc34',true,true,'company','email','603b961f-a315-4c6e-9305-bea0ef60a98c','firstname','lastname','middlename','89999999999','0'),
+                                    ('57b4c653-9dfb-4372-a029-a7a030c27918',true,true,'company_name','test@test.test','603b961f-a315-4c6e-9305-bea0ef60a98c','Василий','Пупкин','Васильевич','89999999999','0');
