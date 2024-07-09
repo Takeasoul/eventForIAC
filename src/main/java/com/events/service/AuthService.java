@@ -3,8 +3,10 @@ package com.events.service;
 import com.events.DTO.RegistrationUserDto;
 import com.events.DTO.UserDto;
 import com.events.JWT.*;
+import com.events.entity.Role;
 import com.events.entity.User;
 import com.events.exceptions.AppError;
+import com.events.repositories.RoleRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.NonNull;
@@ -16,8 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class AuthService<JwtAuthentication> {
 
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public JwtResponse login(@NonNull JwtRequest authRequest) {
@@ -108,6 +113,10 @@ public class AuthService<JwtAuthentication> {
         if(userService.findByLogin(registrationUserDto.getLogin()).isPresent()) {
             return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Такой пользователь уже существует"), HttpStatus.BAD_REQUEST);
         }
+        Optional<Role> roleOptional = roleRepository.findByName("ROLE_USER");
+        Role userRole = roleOptional.orElseThrow(() -> new RuntimeException("Role not found"));
+
+        registrationUserDto.setRoles(Collections.singletonList(userRole));
         User user = userService.createNewUser(registrationUserDto);
 
         return ResponseEntity.ok(new UserDto(user.getId(), user.getLogin(), user.getPassword(), user.getRoles()));
