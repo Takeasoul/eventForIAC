@@ -18,10 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,13 +38,14 @@ public class AuthService<JwtAuthentication> {
         } catch (AuthException e) {
             throw new RuntimeException(e);
         }
+        UUID userId = user.getId();
         user.getPassword();
 
         if (passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken(user);
             final String refreshToken = jwtProvider.generateRefreshToken(user);
             refreshStorage.put(user.getLogin(), refreshToken);
-            return new JwtResponse(accessToken, refreshToken);
+            return new JwtResponse(accessToken, refreshToken,userId );
         } else {
             try {
                 throw new AuthException("Неправильный пароль");
@@ -72,10 +70,10 @@ public class AuthService<JwtAuthentication> {
                 }
                 final String accessToken = jwtProvider.generateAccessToken(user);
                 System.out.println("Отдаем новый акцес токен = " + accessToken);
-                return new JwtResponse(accessToken, null);
+                return new JwtResponse(accessToken, null, null);
             }
         }
-        return new JwtResponse(null, null);
+        return new JwtResponse(null, null, null);
     }
 
     public JwtResponse refresh(@NonNull String refreshToken) {
@@ -94,7 +92,7 @@ public class AuthService<JwtAuthentication> {
                 final String accessToken = jwtProvider.generateAccessToken(user);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(user);
                 refreshStorage.put(user.getLogin(), newRefreshToken);
-                return new JwtResponse(accessToken, newRefreshToken);
+                return new JwtResponse(accessToken, newRefreshToken, null);
             }
         }
         try {

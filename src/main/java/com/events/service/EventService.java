@@ -96,4 +96,10 @@ public class EventService {
     public Optional<Event> findById(UUID id) {
         return eventRepository.findById(id);
     }
+
+    public ResponseEntity<?> getAllEvents()
+    {
+
+        return ResponseEntity.ok(eventRepository.findAll());
+    }
 }

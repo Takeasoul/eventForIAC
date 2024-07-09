@@ -33,6 +33,12 @@ public class EventController {
         return eventService.createNewEvent(eventCreateDto);
     }
 
+    @GetMapping("/eventsAll")
+    public ResponseEntity<?> getAll()
+    {
+        return eventService.getAllEvents();
+    }
+
     @PostMapping("/deleteEvent/{id}")
     public ResponseEntity<?> deleteEvent(@PathVariable UUID id){
         return eventService.deleteById(id);
