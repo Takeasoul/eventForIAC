@@ -22,6 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -29,16 +30,16 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class DocumentService {
-    private final Path root = Paths.get("src/main/resources/static/qr");
 
     private final EventService eventService;
+
+    private final String BADGE_TEMPLATE_PATH = "src/main/resources/static/badge_template.docx";
 
 
     public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
@@ -102,7 +103,7 @@ public class DocumentService {
 
 
 
-            XWPFTemplate.compile("/home/vladimir/IdeaProjects/eventForIAC/src/main/resources/static/badge_template.docx").render(new HashMap<String, Object>(){{
+            XWPFTemplate.compile(BADGE_TEMPLATE_PATH).render(new HashMap<String, Object>(){{
                 put("first_name", eventMember.getFirstname());
                 put("last_name", eventMember.getLastname());
                 put("role", "Участник");
@@ -110,6 +111,34 @@ public class DocumentService {
             }}).writeAndClose(bis);
 
             return new ByteArrayInputStream(bis.toByteArray());
+
+
+    }
+    public ByteArrayInputStream generateListOfWordBadges(UUID eventId)
+            throws FileNotFoundException, IOException,
+            InvalidFormatException {
+        ByteArrayOutputStream bis = new ByteArrayOutputStream();
+
+        List<Event_Member> members = new ArrayList<>();
+
+        members = eventService.findMembersByEventId(eventId);
+
+        if (members == null){
+            return null;
+        }
+
+
+
+
+
+//        XWPFTemplate.compile("/home/vladimir/IdeaProjects/eventForIAC/src/main/resources/static/badge_template.docx").render(new HashMap<String, Object>(){{
+//            put("first_name", eventMember.getFirstname());
+//            put("last_name", eventMember.getLastname());
+//            put("role", "Участник");
+//            put("event", event.getEvent_name());
+//        }}).writeAndClose(bis);
+
+        return new ByteArrayInputStream(bis.toByteArray());
 
 
     }

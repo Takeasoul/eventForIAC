@@ -1,4 +1,6 @@
 spring:
+  thymeleaf:
+    prefix: "classpath:/templates/:"
   jpa:
     generate-ddl: true
 #    defer-datasource-initialization: true

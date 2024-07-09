@@ -3,6 +3,8 @@ package com.events.controller;
 
 import com.events.generator.QRCodeGenerator;
 import com.events.service.EmailService;
+import com.events.utils.mail.AbstractEmailContext;
+import com.events.utils.mail.EmailContext;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -42,7 +44,28 @@ public class EmailController {
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
 
     }
+    @GetMapping(value = "/{user-email}")
+    public @ResponseBody ResponseEntity sendEmail(@PathVariable("user-email") String email) {
 
+        AbstractEmailContext context = new EmailContext();
+        context.setTo(email);
+        context.setSubject("Приглашение на меропритие");
+        context.setTemplateLocation("email_message.html");
+        try {
+            emailService.sendMail(context);
+        } catch (MailException mailException) {
+            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
+            LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
+            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (MessagingException e) {
+            LOG.error("Error while sending out email..{}", e.getStackTrace());
+            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
+            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
+
+    }
     @GetMapping(value = "/simple-order-email/{user-email}")
     public @ResponseBody ResponseEntity sendEmailAttachment(@PathVariable("user-email") String email) {
 
