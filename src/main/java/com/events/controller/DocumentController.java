@@ -1,23 +1,26 @@
 package com.events.controller;
 
-import com.events.entity.Event;
 import com.events.entity.Event_Member;
 import com.events.repositories.EventMemberRepository;
-import com.events.repositories.EventRepository;
+
 import com.events.service.DocumentService;
-import com.events.service.EmailService;
+
 import com.events.service.EventService;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
 import java.util.UUID;
 
 @RequestMapping("api/document")
@@ -36,12 +39,14 @@ public class DocumentController {
                     + "officedocument.wordprocessingml.document")
     public ResponseEntity<InputStreamResource> word(@PathVariable("member-id") UUID memberId)
             throws IOException, InvalidFormatException {
+
         ByteArrayInputStream bis = documentService.generateWordBadge(memberId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
-                "inline; filename=mydoc.docx");
-        return ResponseEntity.ok().headers(headers).
-                body(new InputStreamResource(bis));
+                "inline; filename=badge.docx");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(bis));
     }
     /*@GetMapping(value = "/pdf",
             produces = "application/vnd.openxmlformats-"

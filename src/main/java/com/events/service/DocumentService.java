@@ -1,6 +1,7 @@
 package com.events.service;
 
 import ch.qos.logback.core.util.Loader;
+import com.deepoove.poi.XWPFTemplate;
 import com.events.entity.Event;
 import com.events.entity.Event_Member;
 import com.events.generator.QRCodeGenerator;
@@ -27,6 +28,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,6 +39,7 @@ public class DocumentService {
     private final Path root = Paths.get("src/main/resources/static/qr");
 
     private final EventService eventService;
+
 
     public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
             throws FileNotFoundException, IOException,
@@ -86,46 +90,27 @@ public class DocumentService {
     public ByteArrayInputStream generateWordBadge(UUID eventMemberId)
             throws FileNotFoundException, IOException,
             InvalidFormatException {
-        try (XWPFDocument doc = new XWPFDocument()) {
+            ByteArrayOutputStream bis = new ByteArrayOutputStream();
+
             Event_Member eventMember = eventService.findEventMemberById(eventMemberId);
             if (eventMember == null){
                 return null;
             }
+            Event event = eventService.findById(eventMember.getEventId()).orElseThrow(
+                    (()-> new RuntimeException(MessageFormat.format("Event with id {0} not found!",eventMember.getEventId())))
+            );
 
-            XWPFParagraph p1 = doc.createParagraph();
-            p1.setAlignment(ParagraphAlignment.LEFT);
-            // Set Text to Bold and font size to 22 for first paragraph
-            XWPFRun r1 = p1.createRun();
-            r1.setBold(true);
-            r1.setFontSize(22);
-            r1.setText(eventMember.getLastname());
-            r1.setFontFamily("Arial");
-            r1.addBreak();
 
-            XWPFParagraph p2 = doc.createParagraph();
-            p2.setAlignment(ParagraphAlignment.LEFT);
-            // Set Text to Bold and font size to 22 for first paragraph
-            XWPFRun r2 = p2.createRun();
-            r2.setBold(true);
-            r2.setFontSize(22);
-            r2.setText(eventMember.getFirstname());
-            r2.setFontFamily("Arial");
-            r2.addBreak();
 
-            XWPFParagraph p3 = doc.createParagraph();
-            p3.setAlignment(ParagraphAlignment.LEFT);
-            // Set Text to Bold and font size to 22 for first paragraph
-            XWPFRun r3 = p3.createRun();
-            r3.setBold(true);
-            r3.setFontSize(22);
-            r3.setText(eventMember.getMiddlename());
-            r3.setFontFamily("Arial");
-            r3.addBreak();
+            XWPFTemplate.compile("/home/vladimir/IdeaProjects/eventForIAC/src/main/resources/static/badge_template.docx").render(new HashMap<String, Object>(){{
+                put("first_name", eventMember.getFirstname());
+                put("last_name", eventMember.getLastname());
+                put("role", "Участник");
+                put("event", event.getEvent_name());
+            }}).writeAndClose(bis);
 
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            doc.write(b);
-            return new ByteArrayInputStream(b.toByteArray());
-        }
+            return new ByteArrayInputStream(bis.toByteArray());
+
 
     }
 }
