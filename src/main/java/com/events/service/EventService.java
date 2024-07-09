@@ -7,12 +7,19 @@ import com.events.entity.Event_Member;
 import com.events.exceptions.AppError;
 import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -102,4 +109,13 @@ public class EventService {
 
         return ResponseEntity.ok(eventRepository.findAll());
     }
+
+    public ResponseEntity<?> getAllEventsByOrgId(UUID orgId) {
+        List<Event> events = eventRepository.findByOrgid(orgId);
+        if (events.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No events found for the given orgId.");
+        }
+        return ResponseEntity.ok(events);
+    }
+
 }

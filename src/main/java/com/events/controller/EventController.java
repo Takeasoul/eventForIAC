@@ -92,4 +92,10 @@ public class EventController {
         }
         return ResponseEntity.ok(member);
     }
+
+    @GetMapping("/eventsAll/{id}")
+    public ResponseEntity<?> getAll(@PathVariable UUID id)
+    {
+        return eventService.getAllEventsByOrgId(id);
+    }
 }

@@ -29,5 +29,8 @@ public class Event {
     @Column(name = "reg_open")
     private Boolean reg_open;
 
+    @Column(name = "orgid")
+    private UUID orgid;
+
 
 }
