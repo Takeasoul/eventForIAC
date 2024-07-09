@@ -14,6 +14,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.impl.CTBordersImpl;
 import org.springframework.beans.factory.aot.AotServices;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -85,43 +86,41 @@ public class DocumentService {
     public ByteArrayInputStream generateWordBadge(UUID eventMemberId)
             throws FileNotFoundException, IOException,
             InvalidFormatException {
-
-
-
         try (XWPFDocument doc = new XWPFDocument()) {
+            Event_Member eventMember = eventService.findEventMemberById(eventMemberId);
+            if (eventMember == null){
+                return null;
+            }
 
             XWPFParagraph p1 = doc.createParagraph();
-            p1.setAlignment(ParagraphAlignment.CENTER);
+            p1.setAlignment(ParagraphAlignment.LEFT);
             // Set Text to Bold and font size to 22 for first paragraph
             XWPFRun r1 = p1.createRun();
             r1.setBold(true);
-            r1.setItalic(true);
             r1.setFontSize(22);
-            r1.setText("Spring Boot + Apache POI Example");
-            r1.setFontFamily("Courier");
-            r1.setColor("008000");
+            r1.setText(eventMember.getLastname());
+            r1.setFontFamily("Arial");
             r1.addBreak();
 
             XWPFParagraph p2 = doc.createParagraph();
-            // Set color for second paragraph
+            p2.setAlignment(ParagraphAlignment.LEFT);
+            // Set Text to Bold and font size to 22 for first paragraph
             XWPFRun r2 = p2.createRun();
-            r2.setText("Spring Boot + Apache POI Example");
-            r2.setColor("FF5733");
-            r2.setEmbossed(true);
-            r2.setStrikeThrough(true);
-            r2.addBreak();
+            r2.setBold(true);
+            r2.setFontSize(22);
+            r2.setText(eventMember.getFirstname());
+            r2.setFontFamily("Arial");
             r2.addBreak();
 
             XWPFParagraph p3 = doc.createParagraph();
-            p3.setAlignment(ParagraphAlignment.CENTER);
+            p3.setAlignment(ParagraphAlignment.LEFT);
+            // Set Text to Bold and font size to 22 for first paragraph
             XWPFRun r3 = p3.createRun();
             r3.setBold(true);
-            r3.setItalic(true);
             r3.setFontSize(22);
-            r3.setText("Table");
+            r3.setText(eventMember.getMiddlename());
             r3.setFontFamily("Arial");
-
-
+            r3.addBreak();
 
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             doc.write(b);

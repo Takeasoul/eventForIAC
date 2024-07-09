@@ -43,6 +43,7 @@ public class SecurityConfig {
                     request.requestMatchers("/email").permitAll();
                     request.requestMatchers("/api/auth/login").permitAll();
                     request.requestMatchers("/api/auth/token").permitAll();
+                    request.requestMatchers("/api/event/createEvent").permitAll();
                     request.anyRequest().permitAll();
                 })
                 .exceptionHandling(exception -> exception

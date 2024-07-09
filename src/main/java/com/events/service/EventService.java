@@ -89,6 +89,10 @@ public class EventService {
         return eventMemberRepository.findByEventId(eventId);
     }
 
+    public Event_Member findEventMemberById(UUID eventMemberId) {
+        return eventMemberRepository.findById(eventMemberId).orElse(null);
+    }
+
     public Optional<Event> findById(UUID id) {
         return eventRepository.findById(id);
     }
