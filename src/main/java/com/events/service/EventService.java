@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -78,11 +79,11 @@ public class EventService {
         eventMember.setEmail(eventRegistrationDto.getEmail());
         eventMember.setPhone(eventRegistrationDto.getPhone());
         eventMember.setClubmember(eventRegistrationDto.getClubmember());
-        eventMember.setApproved(false);
+        eventMember.setApproved(null);
         eventMember.setEventId(id);
 
-        eventMemberRepository.save(eventMember);
-        return ResponseEntity.ok(new AppError(HttpStatus.OK.value(), "Registration successful"));
+        Event_Member savedEventMember = eventMemberRepository.save(eventMember);
+        return ResponseEntity.ok(Collections.singletonMap("id", savedEventMember.getId()));
     }
 
     public void approvemember(UUID id) {

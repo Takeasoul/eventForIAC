@@ -11,7 +11,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 public class EventRegistrationDto {
-    private UUID id;
     private String firstname;
     private String middlename;
     private String lastname;
