@@ -16,7 +16,8 @@
             <table role="presentation" style="width: 600px; border-collapse: collapse; margin: 0;">
                 <tr>
                     <td style="padding: 20px;">
-                        <h1 style="font-family: 'Unbounded', sans-serif; font-size: 24px; margin: 0 0 20px 0;">Ваше заявка на участие в мероприятии успешно отправлена!</h1>
+                        <h1 style="font-family: 'Unbounded', sans-serif; font-size: 24px; margin: 0 0 0 0;" th:text="'Уважаемый ' + ${first_name} + ' ' + ${middlename} + '! '"></h1>
+                        <h1 style="font-family: 'Unbounded', sans-serif; font-size: 24px; margin: 0 0 20px 0;">Ваше участие в мероприятии успешно подтверждено!</h1>
                         <p style="font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 16px; margin: 0 0 20px 0;">QR-code для входа на мероприятие и все необходимые инструкции будут высланы после подтверждения организатором вашего участия в мероприятии.</p>
                         <p style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; margin: 20px 0 0 0;">Спасибо, что выбрали наш сервис!</p>
                     </td>

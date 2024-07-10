@@ -28,7 +28,6 @@ public class PdfFileExporter {
     private final String RESOURCE_PATH = "src/main/resources";
 
     public ByteArrayInputStream exportPdfFile(String templateFileName, Map<String, Object> data) {
-
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -47,7 +46,6 @@ public class PdfFileExporter {
             ITextRenderer renderer = new ITextRenderer();
             URL fontResourceURL1 = getClass().getResource("/static/Manrope.ttf");
             URL fontResourceURL2 = getClass().getResource("/static/Unbounded.ttf");
-            //renderer.getFontResolver().addFont(getClass().getClassLoader().getResource("static/Roboto-Black.ttf").toString(), true);
             renderer.getFontResolver().addFont(fontResourceURL1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.getFontResolver().addFont(fontResourceURL2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 

@@ -73,13 +73,16 @@ public class EmailController {
         data.put("status", "Участник");
         data.put("memberId",memberId);
         //ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
-        ByteArrayInputStream bis = documentService.generatePdfMessage(data);
+        Map<String, Object> templateContext = new HashMap<>();
+        templateContext.put("first_name", eventMember.getFirstname());
+        templateContext.put("middlename", eventMember.getMiddlename());
         AbstractEmailContext context = new EmailContext();
+        context.setContext(templateContext);
         context.setTo(eventMember.getEmail());
-        context.setSubject("Приглашение на меропритие");
+        context.setSubject("Приглашение на меропритие: "+ event.getEvent_name());
         context.setTemplateLocation("email_message.html");
         try {
-            emailService.sendMail(context,data);
+            emailService.sendMailWithPdf(context,data);
         } catch (MailException mailException) {
             LOG.error("Error while sending out email..{}", mailException.getStackTrace());
             LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
@@ -91,28 +94,52 @@ public class EmailController {
         }
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
     }
-    @GetMapping(value = "/simple-order-email/{user-email}")
-    public @ResponseBody ResponseEntity sendEmailAttachment(@PathVariable("user-email") String email) {
+//    @GetMapping(value = "/simple-order-email/{user-email}")
+//    public @ResponseBody ResponseEntity sendEmailAttachment(@PathVariable UUID memberId) throws IOException {
+//        Event_Member eventMember = eventService.findMemberById(memberId)
+//                .orElseThrow(() -> new RuntimeException("Event member not found"));
+//        Event event = eventService.findById(eventMember.getEventId())
+//                .orElseThrow(() -> new RuntimeException("Event not found"));
+//
+//
+//        Map<String, Object> templateContext = new HashMap<>();
+//        templateContext.put("first_name", eventMember.getFirstname());
+//        templateContext.put("middlename", eventMember.getMiddlename());
+//        AbstractEmailContext context = new EmailContext();
+//        context.setContext(templateContext);
+//        context.setTo(eventMember.getEmail());
+//        context.setSubject("Регистрация на мероприятие: " + event.getEvent_name());
+//        context.setTemplateLocation("greetings.html");
+//        try {
+//            emailService.sendMail(context);
+//        } catch (MessagingException e) {
+//            LOG.error("Error while sending out email..{}", e.getStackTrace());
+//            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
+//            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
+//    }
 
+
+    @GetMapping(value = "/greetings/{memberId}")
+    public @ResponseBody ResponseEntity sendGreetingsEmail(@PathVariable UUID memberId) {
+        Event_Member eventMember = eventService.findMemberById(memberId)
+                .orElseThrow(() -> new RuntimeException("Event member not found"));
+        Event event = eventService.findById(eventMember.getEventId())
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        Map<String, Object> templateContext = new HashMap<>();
+        templateContext.put("first_name", eventMember.getFirstname());
+        templateContext.put("middlename", eventMember.getMiddlename());
+        AbstractEmailContext context = new EmailContext();
+        context.setContext(templateContext);
+        context.setTo(eventMember.getEmail());
+        context.setSubject("Регистрация на мероприятие: " + event.getEvent_name());
+        context.setTemplateLocation("greetings.html");
         try {
-            emailService.sendEmailWithAttachment(email, "Order Confirmation", "Thanks for your recent order",
-                    "classpath:purchase_order.pdf");
-        } catch (MessagingException | FileNotFoundException mailException) {
-            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
-            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<>("Please check your inbox for order confirmation", HttpStatus.OK);
-    }
-
-
-    @GetMapping(value = "/greetings/{user-email}")
-    public @ResponseBody ResponseEntity sendGreetingsEmail(@PathVariable("user-email") String email) {
-        try {
-            emailService.sendSimpleEmail(email, "Welcome", "This is a welcome email for your!!");
-        } catch (MailException mailException) {
-            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
-            LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
+            emailService.sendMail(context);
+        } catch (MessagingException e) {
+            LOG.error("Error while sending out email..{}", e.getStackTrace());
+            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);

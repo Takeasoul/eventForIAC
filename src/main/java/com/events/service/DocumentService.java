@@ -47,12 +47,9 @@ public class DocumentService {
 
 
 
-    public  ByteArrayInputStream generatePdfMessage(Map<String, Object> context)
-            throws FileNotFoundException, IOException,
-            InvalidFormatException {
+    public  ByteArrayInputStream generatePdfMessage(Map<String, Object> context){
             ByteArrayInputStream bis = pdfFileExporter.exportPdfFile("qr_pdf.html", context);
             return bis;
-
     }
     public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
             throws FileNotFoundException, IOException,

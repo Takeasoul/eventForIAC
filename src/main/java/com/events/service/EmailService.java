@@ -18,6 +18,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class EmailService {
 
     private final SpringTemplateEngine templateEngine;
 
-    private final PdfFileExporter pdfFileExporter;
+    private final DocumentService documentService;
 
     public void sendSimpleEmail(String toAddress, String subject, String message) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -54,23 +55,40 @@ public class EmailService {
         emailSender.send(mimeMessage);
     }
 
-    public void sendMail(AbstractEmailContext email, Map<String, Object> pdfContext) throws MessagingException {
+    public void sendMailWithPdf(AbstractEmailContext emailContext, Map<String, Object> pdfContext) throws MessagingException, IOException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
         Context context = new Context();
-        context.setVariables(email.getContext());
-        String emailContent = templateEngine.process(email.getTemplateLocation(), context);
+        context.setVariables(emailContext.getContext());
+        String emailContent = templateEngine.process(emailContext.getTemplateLocation(), context);
 
-        mimeMessageHelper.setTo(email.getTo());
-        mimeMessageHelper.setSubject(email.getSubject());
+        mimeMessageHelper.setTo(emailContext.getTo());
+        mimeMessageHelper.setSubject(emailContext.getSubject());
         //mimeMessageHelper.setFrom(email.getFrom());
         mimeMessageHelper.setText(emailContent, true);
 
-        ByteArrayInputStream bis = pdfFileExporter.exportPdfFile("qr_pdf.html", pdfContext);
+        ByteArrayInputStream bis = documentService.generatePdfMessage(pdfContext);
         InputStreamSource inputStreamSource = new ByteArrayResource(bis.readAllBytes());
         mimeMessageHelper.addAttachment("Invitation.pdf",inputStreamSource);
+        emailSender.send(message);
+    }
+
+    public void sendMail(AbstractEmailContext emailContext) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name());
+        Context context = new Context();
+        context.setVariables(emailContext.getContext());
+        String emailContent = templateEngine.process(emailContext.getTemplateLocation(), context);
+
+        mimeMessageHelper.setTo(emailContext.getTo());
+        mimeMessageHelper.setSubject(emailContext.getSubject());
+        //mimeMessageHelper.setFrom(email.getFrom());
+        mimeMessageHelper.setText(emailContent, true);
+
         emailSender.send(message);
     }
 }

@@ -28,7 +28,7 @@ public class AppConfiguration {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         // Template cache is true by default. Set to false if you want
         // templates to be automatically updated when modified.
-        templateResolver.setCacheable(false);
+        templateResolver.setCacheable(true);
         return templateResolver;
     }
 
@@ -43,7 +43,7 @@ public class AppConfiguration {
         // with specific cases when expressions in one template are reused
         // across different data types, so this flag is "false" by default
         // for safer backwards compatibility.
-        templateEngine.setEnableSpringELCompiler(false);
+        templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
     }
 
