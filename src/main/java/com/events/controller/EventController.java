@@ -56,7 +56,7 @@ public class EventController {
 
     @PostMapping("/{id}/register")
     public ResponseEntity<?> registerEvent(@PathVariable UUID id, @RequestBody EventRegistrationDto eventRegistrationDto) {
-        return  eventService.regeventmember(eventRegistrationDto, id);
+        return eventService.regeventmember(eventRegistrationDto, id);
     }
 
     @PostMapping("/approve/{id}")
