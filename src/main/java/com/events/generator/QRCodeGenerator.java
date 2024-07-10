@@ -16,8 +16,8 @@ public class QRCodeGenerator {
     private int height;
 
     public QRCodeGenerator() {
-        width = 300;
-        height = 300;
+        width = 400;
+        height = 400;
     }
 
     public BufferedImage generateQrCode(String url) {

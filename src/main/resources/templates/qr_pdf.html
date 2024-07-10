@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Название мероприятия</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&amp;subset=Unbounded:wght@400&amp;display=swap');
+
+        @font-face {
+            src: url('static/Unbounded.ttf');
+            src: url('static/Manrope.ttf');
+            -fs-pdf-font-embed: embed;
+            -fs-pdf-font-encoding: Identity-H;
+        }
+
+        body {
+            background-color: #fff;
+            color: #000;
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        h1 {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .info-table th, .info-table td {
+            padding: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            border: none;
+        }
+
+        .info-table th {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .info-table .right-column {
+            text-align: right;
+        }
+
+        .notice {
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            text-align: center; /* Центрируем текст внутри элемента */
+        }
+
+        .qr-code {
+            display: block;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 th:text ="${event_name}"></h1>
+        <p>Не нужно печатать этот бланк! Просто покажите QR-code администратору на стойке регистрации</p>
+        <table class="info-table">
+            <tr>
+                <th>ФИО:</th>
+                <td>Full name:</td>
+                <td class="right-column" th:text="${first_name} + ' ' +${middlename} + ' ' + ${last_name}"></td>
+            </tr>
+            <tr>
+                <th>E-mail:</th>
+                <td>E-mail:</td>
+                <td class="right-column" th:text="${email}"></td>
+            </tr>
+            <tr>
+                <th>Телефон:</th>
+                <td>Phone:</td>
+                <td class="right-column" th:text="${phone}"></td>
+            </tr>
+            <tr>
+                <th>Компания:</th>
+                <td>Company:</td>
+                <td class="right-column" th:text="${company}"></td>
+            </tr>
+            <tr>
+                <th>Должность:</th>
+                <td>Position:</td>
+                <td class="right-column" th:text="${position}"></td>
+            </tr>
+            <tr>
+                <th>Дата мероприятия:</th>
+                <td>Event date:</td>
+                <td class="right-column" th:text="${#dates.format(event_date, 'dd/MM/yyyy')}"></td>
+            </tr>
+            <tr>
+                <th>Статус:</th>
+                <td>Status:</td>
+                <td class="right-column" th:text="${status}"></td>
+            </tr>
+        </table>
+        <div class="notice">
+            ВНИМАНИЕ! Файл должен содержать информацию о дате, времени и месте проведения мероприятия, названии мероприятия, стоимости/категорию/характеристику приобретенного места, штрих-код для прохождения контроля. В случае отсутствия какого-либо реквизита на ЭБ, он является недействительным. В случае отсутствия на билете указанной информации Клиенту подлежит незамедлительно обратиться в службу поддержки!
+        </div>
+        <img  th:src="${qr_image}" alt="QR Code" class="qr-code" width="150" height="150"/>
+        <div class="instructions">
+            <h2>Порядок прохождения контроля с ЭБ</h2>
+            <p>При посещении мероприятия все Клиенты с ЭБ, проходят каждый по своему билету.</p>
+            <p>Клиент обязан бережно относиться к ЭБ и не допускать его копирования и деформирования. Учитывая, что с момента получения ЭБ, хранение электронного билета, недопущение его копирования и/или иного воспроизведения является обязанностью Клиента.</p>
+            <p>В случае возникновения сомнений в подлинности ЭБ, выявления случаев "двойных" билетов, сотрудники учреждения вправе отказать в посещении зрелищного мероприятия всем лицам, предъявившим спорный ЭБ.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -23,11 +23,12 @@ public class AppConfiguration {
         templateResolver.setApplicationContext(this.applicationContext);
         templateResolver.setPrefix("classpath:/templates/");
         templateResolver.setSuffix(".html");
+
         // HTML is the default value, added here for the sake of clarity.
         templateResolver.setTemplateMode(TemplateMode.HTML);
         // Template cache is true by default. Set to false if you want
         // templates to be automatically updated when modified.
-        templateResolver.setCacheable(true);
+        templateResolver.setCacheable(false);
         return templateResolver;
     }
 
@@ -42,7 +43,7 @@ public class AppConfiguration {
         // with specific cases when expressions in one template are reused
         // across different data types, so this flag is "false" by default
         // for safer backwards compatibility.
-        templateEngine.setEnableSpringELCompiler(true);
+        templateEngine.setEnableSpringELCompiler(false);
         return templateEngine;
     }
 
