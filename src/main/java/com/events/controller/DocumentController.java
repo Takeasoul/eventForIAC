@@ -34,8 +34,6 @@ public class DocumentController {
     private final DocumentService documentService;
     @Autowired
     EventService eventService;
-    @Autowired
-    EventMemberRepository eventMemberRepository;
 
     @GetMapping(value = "/word/{member-id}",
             produces = "application/vnd.openxmlformats-"
@@ -68,7 +66,7 @@ public class DocumentController {
     @GetMapping("/pdf2")
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam UUID memberId)
             throws IOException, InvalidFormatException {
-        Event_Member eventMember = eventMemberRepository.findById(memberId)
+        Event_Member eventMember = eventService.findMemberById(memberId)
                 .orElseThrow(() -> new RuntimeException("Event member not found"));
         Event event = eventService.findById(eventMember.getEventId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));

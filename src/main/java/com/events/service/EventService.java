@@ -104,6 +104,10 @@ public class EventService {
         return eventRepository.findById(id);
     }
 
+    public Optional<Event_Member> findMemberById(UUID id) {
+        return eventMemberRepository.findById(id);
+    }
+
     public ResponseEntity<?> getAllEvents()
     {
 
