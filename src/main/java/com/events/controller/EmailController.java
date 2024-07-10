@@ -61,6 +61,7 @@ public class EmailController {
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         Map<String, Object> data = new HashMap<>();
         data.put("event_name", event.getEvent_name());
+        data.put("event_id", event.getEvent_id());
         data.put("first_name", eventMember.getFirstname());
         data.put("middlename", eventMember.getMiddlename());
         data.put("last_name", eventMember.getLastname());
@@ -103,5 +104,19 @@ public class EmailController {
 
         return new ResponseEntity<>("Please check your inbox for order confirmation", HttpStatus.OK);
     }
+
+
+    @GetMapping(value = "/greetings/{user-email}")
+    public @ResponseBody ResponseEntity sendGreetingsEmail(@PathVariable("user-email") String email) {
+        try {
+            emailService.sendSimpleEmail(email, "Welcome", "This is a welcome email for your!!");
+        } catch (MailException mailException) {
+            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
+            LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
+            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
+    }
+
 
 }
