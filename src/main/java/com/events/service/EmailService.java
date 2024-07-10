@@ -1,11 +1,14 @@
 package com.events.service;
 
+import com.events.utils.documents.PdfFileExporter;
 import com.events.utils.mail.AbstractEmailContext;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class EmailService {
 
     private final SpringTemplateEngine templateEngine;
 
+    private final PdfFileExporter pdfFileExporter;
 
     public void sendSimpleEmail(String toAddress, String subject, String message) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -48,10 +54,7 @@ public class EmailService {
         emailSender.send(mimeMessage);
     }
 
-
-
-
-    public void sendMail(AbstractEmailContext email) throws MessagingException {
+    public void sendMail(AbstractEmailContext email, Map<String, Object> pdfContext) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
@@ -64,6 +67,10 @@ public class EmailService {
         mimeMessageHelper.setSubject(email.getSubject());
         //mimeMessageHelper.setFrom(email.getFrom());
         mimeMessageHelper.setText(emailContent, true);
+
+        ByteArrayInputStream bis = pdfFileExporter.exportPdfFile("qr_pdf.html", pdfContext);
+        InputStreamSource inputStreamSource = new ByteArrayResource(bis.readAllBytes());
+        mimeMessageHelper.addAttachment("Invitation.pdf",inputStreamSource);
         emailSender.send(message);
     }
 }
