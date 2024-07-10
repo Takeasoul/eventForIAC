@@ -54,8 +54,6 @@ public class DocumentService {
             return bis;
 
     }
-
-
     public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
             throws FileNotFoundException, IOException,
             InvalidFormatException {
@@ -115,16 +113,12 @@ public class DocumentService {
                     (()-> new RuntimeException(MessageFormat.format("Event with id {0} not found!",eventMember.getEventId())))
             );
 
-
-
             XWPFTemplate.compile(BADGE_TEMPLATE_PATH).render(new HashMap<String, Object>(){{
                 put("first_name", eventMember.getFirstname());
                 put("last_name", eventMember.getLastname());
                 put("role", "Участник");
                 put("event", event.getEvent_name());
             }}).writeAndClose(bis);
-
-
 
             return new ByteArrayInputStream(bis.toByteArray());
 

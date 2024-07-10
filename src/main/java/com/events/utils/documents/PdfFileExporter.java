@@ -39,9 +39,7 @@ public class PdfFileExporter {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(qrCodeImage, "png", baos);
             String base64Image = Base64.getEncoder().encodeToString(baos.toByteArray());
-            System.out.println(base64Image);
             String image = "data:image/png;base64," + base64Image;
-            System.out.println(image);
             data.put("qr_image",image);
 //            File outputfile = new File(RESOURCE_PATH + "/static/images/qr.png");
 //            ImageIO.write(qrCodeImage, "png", outputfile);
@@ -54,7 +52,6 @@ public class PdfFileExporter {
             renderer.getFontResolver().addFont(fontResourceURL2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             String htmlContent = generateHtml(templateFileName, data);
-            System.out.println(htmlContent);
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
             renderer.createPDF(outputStream, false);
