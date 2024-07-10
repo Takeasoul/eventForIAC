@@ -1,5 +1,6 @@
 package com.events.controller;
 
+import com.events.entity.Event;
 import com.events.entity.Event_Member;
 import com.events.repositories.EventMemberRepository;
 
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RequestMapping("api/document")
@@ -66,10 +69,23 @@ public class DocumentController {
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam UUID memberId)
             throws IOException, InvalidFormatException {
         Event_Member eventMember = eventMemberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Event Member not found"));
-
-        ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
-
+                .orElseThrow(() -> new RuntimeException("Event member not found"));
+        Event event = eventService.findById(eventMember.getEventId())
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        Map<String, Object> data = new HashMap<>();
+        data.put("event_name", event.getEvent_name());
+        data.put("first_name", eventMember.getFirstname());
+        data.put("middlename", eventMember.getMiddlename());
+        data.put("last_name", eventMember.getLastname());
+        data.put("email", eventMember.getEmail());
+        data.put("phone", eventMember.getPhone());
+        data.put("position",eventMember.getPosition());
+        data.put("company", eventMember.getCompany());
+        data.put("event_date",event.getEvent_date());
+        data.put("status", "Участник");
+        data.put("memberId",memberId);
+        //ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
+        ByteArrayInputStream bis = documentService.generatePdfMessage(data);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=mydoc.pdf");
         headers.setContentType(MediaType.APPLICATION_PDF);

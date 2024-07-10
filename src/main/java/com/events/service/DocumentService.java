@@ -5,6 +5,8 @@ import com.deepoove.poi.XWPFTemplate;
 import com.events.entity.Event;
 import com.events.entity.Event_Member;
 import com.events.generator.QRCodeGenerator;
+import com.events.utils.documents.PdfFileExporter;
+import com.events.utils.mail.AbstractEmailContext;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -39,7 +41,19 @@ public class DocumentService {
 
     private final EventService eventService;
 
+    private final PdfFileExporter pdfFileExporter;
+
     private final String BADGE_TEMPLATE_PATH = "src/main/resources/static/badge_template.docx";
+
+
+
+    public  ByteArrayInputStream generatePdfMessage(Map<String, Object> context)
+            throws FileNotFoundException, IOException,
+            InvalidFormatException {
+            ByteArrayInputStream bis = pdfFileExporter.exportPdfFile("qr_pdf.html", context);
+            return bis;
+
+    }
 
 
     public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
@@ -109,6 +123,8 @@ public class DocumentService {
                 put("role", "Участник");
                 put("event", event.getEvent_name());
             }}).writeAndClose(bis);
+
+
 
             return new ByteArrayInputStream(bis.toByteArray());
 
