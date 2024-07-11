@@ -37,7 +37,7 @@ public class SecurityConfig {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/secured").hasAuthority("ROLE_TEACHER");
+                    request.requestMatchers("/api/event/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZATOR");
                     request.requestMatchers("/info").authenticated();
                     request.requestMatchers("/login").permitAll();
                     request.requestMatchers("/email").permitAll();

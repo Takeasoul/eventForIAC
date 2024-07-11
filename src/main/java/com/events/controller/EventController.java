@@ -100,6 +100,12 @@ public class EventController {
         return eventService.getAllEventsByOrgId(id);
     }
 
+    // Добавляем новый метод с уникальным URL
+    @GetMapping("/eventsAllByOrgId")
+    public ResponseEntity<?> getAllByOrgId(@RequestParam UUID orgId) {
+        return eventService.getAllEventsByOrgId(orgId);
+    }
+
     @GetMapping("/memberInfo/{id}")
     public ResponseEntity<?> getMemberInfo(@PathVariable UUID id)
     {
