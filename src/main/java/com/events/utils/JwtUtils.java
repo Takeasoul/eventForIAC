@@ -13,10 +13,12 @@ import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtUtils {
+    private static final String USER_ID_CLAIM = "userId";
 
     public static JwtAuthentication generate(Claims claims) {
         final JwtAuthentication jwtInfoToken = new JwtAuthentication();
         jwtInfoToken.setRoles(getRoles(claims));
+        jwtInfoToken.setUserId(getUserId(claims));
         jwtInfoToken.setUsername(claims.getSubject());
         return jwtInfoToken;
     }
@@ -40,5 +42,12 @@ public final class JwtUtils {
         return roles;
     }
 
+    private static UUID getUserId(Claims claims) {
+        Object userIdObj = claims.get(USER_ID_CLAIM);
+        if (userIdObj instanceof String) {
+            return UUID.fromString((String) userIdObj);
+        }
+        return null;
+    }
 }
 
