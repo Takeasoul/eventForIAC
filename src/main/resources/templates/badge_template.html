@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Badges</title>
+    <style>
+
+        @font-face {
+            src: url('static/Unbounded.ttf');
+            src: url('static/Manrope.ttf');
+            -fs-pdf-font-embed: embed;
+            -fs-pdf-font-encoding: Identity-H;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 20px;
+        }
+        .badge {
+            background-image: url('pattern.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            padding: 20px;
+            border: 1px dashed black;
+            text-align: center;
+            position: relative;
+            width: 200px; /* Fixed width for the badge */
+            height: 300px; /* Fixed height for the badge */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .event-name {
+            font-family: 'Unbounded', sans-serif;
+            color: #2B2222;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .name, .surname {
+            font-size: 20px;
+            color: #2B2222;
+            margin: 5px 0;
+        }
+        .participant {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #2B2222;
+            color: white;
+            font-size: 16px;
+            line-height: 60px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="badge">
+        <div class="event-name" id="event1">Мероприятие</div>
+        <div class="surname" id="surname1">ФАМИЛИЯ</div>
+        <div class="name" id="name1">ИМЯ</div>
+        <div class="participant" id="participant1">УЧАСТНИК</div>
+    </div>
+    <div class="badge">
+        <div class="event-name" id="event2">Мероприятие</div>
+        <div class="surname" id="surname2">ФАМИЛИЯ</div>
+        <div class="name" id="name2">ИМЯ</div>
+        <div class="participant" id="participant2">УЧАСТНИК</div>
+    </div>
+    <div class="badge">
+        <div class="event-name" id="event3">Мероприятие</div>
+        <div class="surname" id="surname3">ФАМИЛИЯ</div>
+        <div class="name" id="name3">ИМЯ</div>
+        <div class="participant" id="participant3">УЧАСТНИК</div>
+    </div>
+    <div class="badge">
+        <div class="event-name" id="event4">Мероприятие</div>
+        <div class="surname" id="surname4">ФАМИЛИЯ</div>
+        <div class="name" id="name4">ИМЯ</div>
+        <div class="participant" id="participant4">УЧАСТНИК</div>
+    </div>
+</div>
+</body>
+</html>

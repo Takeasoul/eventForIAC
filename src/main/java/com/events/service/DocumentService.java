@@ -1,13 +1,14 @@
 package com.events.service;
 
-import ch.qos.logback.core.util.Loader;
+
 import com.deepoove.poi.XWPFTemplate;
 import com.events.entity.Event;
 import com.events.entity.Event_Member;
 import com.events.generator.QRCodeGenerator;
-import com.events.utils.documents.PdfFileExporter;
-import com.events.utils.mail.AbstractEmailContext;
+
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -15,22 +16,23 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.apache.poi.util.Units;
-import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.impl.CTBordersImpl;
-import org.springframework.beans.factory.aot.AotServices;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import java.net.URL;
+
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -41,19 +43,47 @@ public class DocumentService {
 
     private final EventService eventService;
 
-    private final PdfFileExporter pdfFileExporter;
+
 
     private final String BADGE_TEMPLATE_PATH = "src/main/resources/static/badge_template.docx";
 
 
+    private final SpringTemplateEngine templateEngine;
 
-    public  ByteArrayInputStream generatePdfMessage(Map<String, Object> context){
-            ByteArrayInputStream bis = pdfFileExporter.exportPdfFile("qr_pdf.html", context);
-            return bis;
+    private final String RESOURCE_PATH = "src/main/resources";
+
+
+    public  ByteArrayInputStream generatePdfMessage(Map<String, Object> context)
+            throws DocumentException, IOException {
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
+            String url = "http://localhost:8080/api/document/pdf2?memberId=" + context.get("memberId");
+            BufferedImage qrCodeImage = qrCodeGenerator.generateQrCode(url);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(qrCodeImage, "png", baos);
+            String base64Image = Base64.getEncoder().encodeToString(baos.toByteArray());
+            String image = "data:image/png;base64," + base64Image;
+            context.put("qr_image",image);
+//            File outputfile = new File(RESOURCE_PATH + "/static/images/qr.png");
+//            ImageIO.write(qrCodeImage, "png", outputfile);
+
+            ITextRenderer renderer = new ITextRenderer();
+            URL fontResourceURL1 = getClass().getResource("/static/Manrope.ttf");
+            URL fontResourceURL2 = getClass().getResource("/static/Unbounded.ttf");
+            renderer.getFontResolver().addFont(fontResourceURL1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont(fontResourceURL2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+            String htmlContent = generateHtml("qr_pdf.html", context);
+            renderer.setDocumentFromString(htmlContent);
+            renderer.layout();
+            renderer.createPDF(outputStream, false);
+            renderer.finishPDF();
+            return new ByteArrayInputStream(outputStream.toByteArray());
+
     }
-    public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event)
-            throws FileNotFoundException, IOException,
-            InvalidFormatException {
+    public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event) {
         try {
             PDDocument pdDoc = new PDDocument();
             PDPage page = new PDPage();
@@ -148,5 +178,11 @@ public class DocumentService {
         return new ByteArrayInputStream(bis.toByteArray());
 
 
+    }
+
+    private String generateHtml(String templateFileName, Map<String, Object> data) {
+        Context context = new Context();
+        context.setVariables(data);
+        return templateEngine.process(templateFileName, context);
     }
 }

@@ -1,13 +1,14 @@
 package com.events.service;
 
-import com.events.utils.documents.PdfFileExporter;
+
 import com.events.utils.mail.AbstractEmailContext;
+import com.lowagie.text.DocumentException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
+
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -55,7 +56,7 @@ public class EmailService {
         emailSender.send(mimeMessage);
     }
 
-    public void sendMailWithPdf(AbstractEmailContext emailContext, Map<String, Object> pdfContext) throws MessagingException, IOException {
+    public void sendMailWithPdf(AbstractEmailContext emailContext, Map<String, Object> pdfContext) throws MessagingException, IOException, DocumentException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,

@@ -1,12 +1,6 @@
 spring:
   thymeleaf:
     prefix: "classpath:/templates/:"
-  web:
-    resources:
-      cache:
-        period: 0
-      static-locations: file:src/main/resources/static/
-
   jpa:
     generate-ddl: true
 #    defer-datasource-initialization: true

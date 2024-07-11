@@ -8,6 +8,7 @@ import com.events.service.DocumentService;
 
 import com.events.service.EventService;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.lowagie.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class DocumentController {
 
     @GetMapping("/pdf2")
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam UUID memberId)
-            throws IOException, InvalidFormatException {
+            throws IOException, DocumentException {
         Event_Member eventMember = eventService.findMemberById(memberId)
                 .orElseThrow(() -> new RuntimeException("Event member not found"));
         Event event = eventService.findById(eventMember.getEventId())

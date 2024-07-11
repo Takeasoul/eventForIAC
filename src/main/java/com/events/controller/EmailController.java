@@ -9,6 +9,7 @@ import com.events.service.EmailService;
 import com.events.service.EventService;
 import com.events.utils.mail.AbstractEmailContext;
 import com.events.utils.mail.EmailContext;
+import com.lowagie.text.DocumentException;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -83,13 +84,13 @@ public class EmailController {
         context.setTemplateLocation("email_message.html");
         try {
             emailService.sendMailWithPdf(context,data);
-        } catch (MailException mailException) {
+        } catch (MailException | MessagingException mailException) {
             LOG.error("Error while sending out email..{}", mailException.getStackTrace());
             LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (MessagingException e) {
-            LOG.error("Error while sending out email..{}", e.getStackTrace());
-            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
+        } catch (DocumentException e) {
+            LOG.error("Error while creating document..{}", e.getStackTrace());
+            LOG.error("Error while creating document..{}", e.fillInStackTrace());
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
