@@ -85,6 +85,7 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
+
     @GetMapping("/{id}/members/{memberid}")
     public ResponseEntity<?> getCurrentMembers(@PathVariable UUID id, @PathVariable UUID memberid) {
         Optional<Event> member = eventService.findById(memberid);
