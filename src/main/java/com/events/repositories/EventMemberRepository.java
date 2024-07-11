@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface EventMemberRepository extends CrudRepository<Event_Member, UUID> {
     List<Event_Member> findByEventId(UUID eventId);
+
+    List<Event_Member> findByEventIdAndApproved(UUID eventId, Boolean approved);
 }

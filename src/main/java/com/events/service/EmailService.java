@@ -70,7 +70,7 @@ public class EmailService {
         //mimeMessageHelper.setFrom(email.getFrom());
         mimeMessageHelper.setText(emailContent, true);
 
-        ByteArrayInputStream bis = documentService.generatePdfMessage(pdfContext);
+        ByteArrayInputStream bis = documentService.generatePdfQrReport(pdfContext);
         InputStreamSource inputStreamSource = new ByteArrayResource(bis.readAllBytes());
         mimeMessageHelper.addAttachment("Invitation.pdf",inputStreamSource);
         emailSender.send(message);

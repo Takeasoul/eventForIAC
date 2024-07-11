@@ -20,6 +20,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -50,10 +51,7 @@ public class DocumentService {
 
     private final SpringTemplateEngine templateEngine;
 
-    private final String RESOURCE_PATH = "src/main/resources";
-
-
-    public  ByteArrayInputStream generatePdfMessage(Map<String, Object> context)
+    public  ByteArrayInputStream generatePdfQrReport(Map<String, Object> context)
             throws DocumentException, IOException {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -66,8 +64,6 @@ public class DocumentService {
             String base64Image = Base64.getEncoder().encodeToString(baos.toByteArray());
             String image = "data:image/png;base64," + base64Image;
             context.put("qr_image",image);
-//            File outputfile = new File(RESOURCE_PATH + "/static/images/qr.png");
-//            ImageIO.write(qrCodeImage, "png", outputfile);
 
             ITextRenderer renderer = new ITextRenderer();
             URL fontResourceURL1 = getClass().getResource("/static/Manrope.ttf");
@@ -83,6 +79,44 @@ public class DocumentService {
             return new ByteArrayInputStream(outputStream.toByteArray());
 
     }
+
+    public  ByteArrayInputStream generatePdfBadges(List<Event_Member> members, String eventName)
+            throws DocumentException, IOException {
+
+        List<ArrayList<Event_Member>> members_pairs = new ArrayList<>();
+        for(int i = 0; i < members.size(); i += 2){
+            ArrayList<Event_Member> pair = new ArrayList<>();
+            pair.add(members.get(i));
+            if (i+1 < members.size()){
+                pair.add(members.get(i+1));
+            }
+            members_pairs.add(pair);
+        }
+
+
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("members_pairs",members_pairs);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        context.put("event_name", eventName);
+
+        ITextRenderer renderer = new ITextRenderer();
+
+        URL fontResourceURL1 = getClass().getResource("/static/Manrope.ttf");
+        URL fontResourceURL2 = getClass().getResource("/static/Unbounded.ttf");
+        renderer.getFontResolver().addFont(fontResourceURL1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        renderer.getFontResolver().addFont(fontResourceURL2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+        String htmlContent = generateHtml("badge.html", context);
+        System.out.println(htmlContent);
+        renderer.setDocumentFromString(htmlContent);
+        renderer.layout();
+        renderer.createPDF(outputStream, false);
+        renderer.finishPDF();
+        return new ByteArrayInputStream(outputStream.toByteArray());
+
+    }
+
     public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event) {
         try {
             PDDocument pdDoc = new PDDocument();

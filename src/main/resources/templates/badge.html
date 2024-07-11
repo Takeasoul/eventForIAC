@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Event Badges</title>
-    <style>
+    <style th:inline="text">
 
         @font-face {
             src: url('static/Unbounded.ttf');
@@ -16,19 +16,17 @@
         body {
             font-family: 'Manrope', sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            border-collapse: collapse;
         }
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            padding: 20px;
         }
+
         .badge {
-            background-image: url('pattern.jpg');
+            background-image: url([[@{classpath:/static/images/pattern.jpg}]]);
             background-size: cover;
             background-repeat: no-repeat;
             padding: 20px;
@@ -45,6 +43,10 @@
             font-size: 18px;
             margin-bottom: 20px;
         }
+        td {
+            padding: 0;
+            margin: 0;
+        }
         .name, .surname {
             font-size: 20px;
             color: #2B2222;
@@ -54,7 +56,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
+            width: 120%;
             height: 60px;
             background-color: #2B2222;
             color: white;
@@ -66,30 +68,21 @@
 </head>
 <body>
 <div class="container">
-    <div class="badge">
-        <div class="event-name" id="event1">Мероприятие</div>
-        <div class="surname" id="surname1">ФАМИЛИЯ</div>
-        <div class="name" id="name1">ИМЯ</div>
-        <div class="participant" id="participant1">УЧАСТНИК</div>
-    </div>
-    <div class="badge">
-        <div class="event-name" id="event2">Мероприятие</div>
-        <div class="surname" id="surname2">ФАМИЛИЯ</div>
-        <div class="name" id="name2">ИМЯ</div>
-        <div class="participant" id="participant2">УЧАСТНИК</div>
-    </div>
-    <div class="badge">
-        <div class="event-name" id="event3">Мероприятие</div>
-        <div class="surname" id="surname3">ФАМИЛИЯ</div>
-        <div class="name" id="name3">ИМЯ</div>
-        <div class="participant" id="participant3">УЧАСТНИК</div>
-    </div>
-    <div class="badge">
-        <div class="event-name" id="event4">Мероприятие</div>
-        <div class="surname" id="surname4">ФАМИЛИЯ</div>
-        <div class="name" id="name4">ИМЯ</div>
-        <div class="participant" id="participant4">УЧАСТНИК</div>
-    </div>
+    <table>
+        <th:block th:each="member_pair, pairStats : ${members_pairs}">
+        <tr>
+            <td th:each="member, stats : ${member_pair}">
+                <div class="badge">
+                    <div th:text="${event_name}" class="event-name" th:id="'event' + ${pairStats.index + stats.index}">Мероприятие</div>
+                    <div th:text="${member.lastname}" class="surname" th:id="'surname' + ${pairStats.index + stats.index}">ФАМИЛИЯ</div>
+                    <div th:text="${member.firstname}" class="name" th:id="'name' + ${pairStats.index + stats.index}">ИМЯ</div>
+                    <div class="participant" th:id="'participant' + ${pairStats.index + stats.index}">УЧАСТНИК</div>
+                </div>
+            </td>
+        </tr>
+        <tr th:if="(((${pairStats.index} + 1)%2  == 0) and !(${pairStats.last}))" style="page-break-after:always;"></tr>
+        </th:block>
+    </table>
 </div>
 </body>
 </html>

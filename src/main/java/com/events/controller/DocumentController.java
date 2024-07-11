@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -64,7 +65,7 @@ public class DocumentController {
     }
 */
 
-    @GetMapping("/pdf2")
+    @GetMapping("/pdf/qr")
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam UUID memberId)
             throws IOException, DocumentException {
         Event_Member eventMember = eventService.findMemberById(memberId)
@@ -84,7 +85,7 @@ public class DocumentController {
         data.put("status", "Участник");
         data.put("memberId",memberId);
         //ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
-        ByteArrayInputStream bis = documentService.generatePdfMessage(data);
+        ByteArrayInputStream bis = documentService.generatePdfQrReport(data);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=mydoc.pdf");
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -93,4 +94,26 @@ public class DocumentController {
                 .headers(headers)
                 .body(new InputStreamResource(bis));
     }
+
+    @GetMapping("/pdf/badges")
+    public ResponseEntity<?> generatePdfBadges(@RequestParam UUID eventId)
+            throws IOException, DocumentException {
+        Event event = eventService.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        List<Event_Member> members = eventService.findApprovedMembersByEventId(eventId,true);
+        if (members.isEmpty()){
+            return ResponseEntity.ok()
+                    .body("Участники мероприятия не найдены");
+        }
+
+        ByteArrayInputStream bis = documentService.generatePdfBadges(members,event.getEvent_name());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=badges.pdf");
+        headers.setContentType(MediaType.APPLICATION_PDF);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(bis));
+    }
+
 }

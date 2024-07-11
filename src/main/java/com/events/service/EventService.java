@@ -97,6 +97,10 @@ public class EventService {
         return eventMemberRepository.findByEventId(eventId);
     }
 
+    public List<Event_Member> findApprovedMembersByEventId(UUID eventId, Boolean approved) {
+        return eventMemberRepository.findByEventIdAndApproved(eventId,approved);
+    }
+
     public Event_Member findEventMemberById(UUID eventMemberId) {
         return eventMemberRepository.findById(eventMemberId).orElse(null);
     }
