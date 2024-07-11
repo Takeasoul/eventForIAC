@@ -8,6 +8,7 @@ import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
 import com.events.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,5 +98,15 @@ public class EventController {
     public ResponseEntity<?> getAll(@PathVariable UUID id)
     {
         return eventService.getAllEventsByOrgId(id);
+    }
+
+    @GetMapping("/memberInfo/{id}")
+    public ResponseEntity<?> getMemberInfo(@PathVariable UUID id)
+    {
+        System.out.println("Зашел" + id);
+        Optional<Event_Member> member = eventService.findMemberById(id);
+        if(member.isEmpty())
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(member);
     }
 }
