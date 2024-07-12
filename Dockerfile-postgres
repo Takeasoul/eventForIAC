@@ -1,0 +1,5 @@
+# Use the official PostgreSQL image as base
+FROM postgres:latest
+
+# Copy the data.sql script into the container at /docker-entrypoint-initdb.d
+COPY ./src/main/resources/data.sql /docker-entrypoint-initdb.d/data.sql
