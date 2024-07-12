@@ -56,7 +56,7 @@ public class DocumentService {
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             QRCodeGenerator qrCodeGenerator = new QRCodeGenerator();
-            String url = "http://localhost:8080/api/document/pdf2?memberId=" + context.get("memberId");
+            String url = "http://localhost:5173/event-member-info/" + context.get("memberId");
             BufferedImage qrCodeImage = qrCodeGenerator.generateQrCode(url);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
