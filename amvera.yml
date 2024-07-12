@@ -1,0 +1,14 @@
+---
+meta:
+  environment: jvm
+  toolchain:
+    name: maven
+    version: 17
+build:
+  artifacts:
+    build/libs/*.jar: /
+  args: spring-boot:repackage
+run:
+  jarName: events-0.0.1-SNAPSHOT.jar
+  persistenceMount: /data
+  containerPort: 80
