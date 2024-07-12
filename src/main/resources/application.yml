@@ -7,9 +7,9 @@ spring:
   application:
     name: events
   datasource:
-    url: jdbc:postgresql://localhost:5432/event
-    username: postgres
-    password: admin
+    url: jdbc:postgresql://dpg-cq8pi0o8fa8c73attqa0-a:5432/event_y2jw
+    username: admin
+    password: niDSNPYmSsOumg0OhJTnoxB141TLeBOF
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: event_schema
