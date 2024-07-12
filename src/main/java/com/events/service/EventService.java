@@ -8,6 +8,7 @@ import com.events.exceptions.AppError;
 import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import io.micrometer.observation.Observation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -87,10 +88,16 @@ public class EventService {
     }
 
     public void approvemember(UUID id) {
-        Event_Member eventMember = eventMemberRepository.findById(id).orElse(null);
-        assert eventMember != null;
-        eventMember.setApproved(true);
 
+       Event_Member event_member = eventMemberRepository.findById(id).orElseThrow(() -> new RuntimeException("Event member not found"));
+       event_member.setApproved(true);
+       eventMemberRepository.save(event_member);
+    }
+
+    public void unapprovemember(UUID id) {
+        Event_Member event_member = eventMemberRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
+        event_member.setApproved(false);
+        eventMemberRepository.save(event_member);
     }
 
     public List<Event_Member> findMembersByEventId(UUID eventId) {

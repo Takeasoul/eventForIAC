@@ -40,10 +40,11 @@ public class SecurityConfig {
                     request.requestMatchers("/api/event/{id}/register").permitAll();
                     request.requestMatchers("/api/event/{id}/info").permitAll();
                     request.requestMatchers("/api/event/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZATOR");
+                    request.requestMatchers("/api/document/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ORGANIZATOR");
                     request.requestMatchers("/info").authenticated();
                     request.requestMatchers("/login").permitAll();
                     request.requestMatchers("/api/email/**").permitAll();
-                    request.requestMatchers("/api/auth/login").permitAll();
+                    request.requestMatchers("api/auth/**").permitAll();
                     request.requestMatchers("/api/auth/token").permitAll();
                     request.requestMatchers("/api/event/createEvent").permitAll();
 

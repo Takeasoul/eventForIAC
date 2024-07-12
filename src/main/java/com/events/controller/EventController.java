@@ -62,8 +62,15 @@ public class EventController {
 
     @PostMapping("/approve/{id}")
     public ResponseEntity<?> approve(@PathVariable UUID id) {
-
+        System.out.println("SADASDASDASD");
         eventService.approvemember(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/unapprove/{id}")
+    public ResponseEntity<?> unapprove(@PathVariable UUID id) {
+
+        eventService.unapprovemember(id);
         return ResponseEntity.ok().build();
     }
 
