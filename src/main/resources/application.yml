@@ -7,9 +7,9 @@ spring:
   application:
     name: events
   datasource:
-    url: jdbc:postgresql://https://amvera-akizar-cnpg-postgres-rw:5432/event
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/event
+    username: postgres
+    password: admin
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: event_schema
@@ -43,6 +43,3 @@ logging:
       springframework:
         web: DEBUG
         security: DEBUG
-
-server:
-  port: 80
