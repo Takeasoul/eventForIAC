@@ -4,8 +4,21 @@ FROM openjdk:17-jdk-slim AS build
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем исполняемый JAR файл Maven
-COPY --from=build /target/events-0.0.1-SNAPSHOT.jar app.jar
+# Копируем pom.xml и исходники проекта
+COPY pom.xml .
+COPY src ./src
+
+# Собираем проект, создавая исполняемый JAR файл
+RUN mvn clean package -DskipTests
+
+# Этап выполнения
+FROM openjdk:17-jdk-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем исполняемый JAR файл из этапа сборки
+COPY --from=build /app/target/events-0.0.1-SNAPSHOT.jar app.jar
 
 # Открываем порт, на котором работает ваше приложение
 EXPOSE 8080
