@@ -9,6 +9,6 @@ build:
     build/libs/*.jar: /
   args: spring-boot:repackage
 run:
-  jarName: main.jar
+  jarName: events-0.0.1-SNAPSHOT.jar
   persistenceMount: /data
   containerPort: 80
