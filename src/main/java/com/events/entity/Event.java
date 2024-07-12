@@ -32,5 +32,8 @@ public class Event {
     @Column(name = "orgid")
     private UUID orgid;
 
+    @Column(name = "address")
+    private String address;
+
 
 }

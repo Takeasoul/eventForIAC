@@ -40,7 +40,9 @@ public class EventService {
         event.setEvent_name(eventCreateDto.getEvent_name());
         event.setEvent_summary(eventCreateDto.getEvent_summary());
         event.setEvent_date(eventCreateDto.getEvent_date());
+        event.setOrgid(eventCreateDto.getOgr_id());
         event.setReg_open(eventCreateDto.getReg_open());
+        event.setAddress(eventCreateDto.getAddress());
         eventRepository.save(event);
         return event;
     }
@@ -133,5 +135,6 @@ public class EventService {
         }
         return ResponseEntity.ok(events);
     }
+
 
 }

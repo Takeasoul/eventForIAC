@@ -11,9 +11,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class EventCreateDto {
-    private UUID event_id;
+    private UUID ogr_id;
     private String event_name;
     private String event_summary;
     private Date event_date;
     private Boolean reg_open;
+    private String address;
 }
