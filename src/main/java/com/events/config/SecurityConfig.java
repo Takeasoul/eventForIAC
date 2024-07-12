@@ -46,8 +46,6 @@ public class SecurityConfig {
                     request.requestMatchers("/api/email/**").permitAll();
                     request.requestMatchers("api/auth/**").permitAll();
                     request.requestMatchers("/api/auth/token").permitAll();
-                    request.requestMatchers("/api/event/createEvent").permitAll();
-
                 })
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
