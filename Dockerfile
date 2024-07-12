@@ -1,5 +1,5 @@
-# Используем базовый образ с установленным JDK
-FROM openjdk:17-jdk-slim AS build
+# Этап сборки
+FROM maven:3.8.7-openjdk-17-slim AS build
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
