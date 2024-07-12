@@ -1,30 +1,25 @@
-# Этап сборки
-FROM maven:3.8.7-openjdk-17-slim AS build
+# Используем официальный образ Ubuntu как базовый образ
+FROM ubuntu:latest
+
+# Указываем автора образа
+LABEL authors="odent"
+
+# Устанавливаем необходимые пакеты
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean;
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем pom.xml и исходники проекта
-COPY pom.xml .
-COPY src ./src
+# Копируем файл сборки JAR в контейнер
+COPY target/events-0.0.1-SNAPSHOT.jar app.jar
 
-# Собираем проект, создавая исполняемый JAR файл
-RUN mvn clean package -DskipTests
-
-# Этап выполнения
-FROM openjdk:17-jdk-slim
-
-# Устанавливаем рабочую директорию
-WORKDIR /app
-
-# Копируем исполняемый JAR файл из этапа сборки
-COPY --from=build /app/target/events-0.0.1-SNAPSHOT.jar app.jar
-
-# Открываем порт, на котором работает ваше приложение
+# Экспонируем порт, который использует ваше приложение
 EXPOSE 8080
 
-# Определяем переменные окружения, если нужно
+# Устанавливаем переменную окружения, чтобы указать JVM не буферизовать стандартные потоки
 ENV JAVA_OPTS=""
 
-# Команда для запуска приложения
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Команда для запуска вашего приложения
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
