@@ -97,6 +97,7 @@ public class EventService {
     }
 
     public void unapprovemember(UUID id) {
+        System.out.println("sadasdasd");
         Event_Member event_member = eventMemberRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
         event_member.setApproved(false);
         eventMemberRepository.save(event_member);
