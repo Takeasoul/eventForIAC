@@ -20,7 +20,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -34,8 +33,6 @@ import java.io.*;
 
 import java.net.URL;
 
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -68,24 +65,12 @@ public class DocumentService {
             context.put("qr_image",image);
 
             ITextRenderer renderer = new ITextRenderer();
-            Resource fontResource1 = new ClassPathResource("/static/Manrope.ttf");
-            InputStream inputStream1 = fontResource1.getInputStream();
-
-            Resource fontResource2 = new ClassPathResource("/static/Unbounded.ttf");
-            InputStream inputStream2 = fontResource2.getInputStream();
-
-            File tempDir = Files.createTempDirectory("fonts").toFile();
-
-            // Создаем временные файлы для копирования
-            File tempFile1 = new File(tempDir, "Manrope.ttf");
-            File tempFile2 = new File(tempDir, "Unbounded.ttf");
-
-        // Копируем данные из InputStream во временные файлы
-            Files.copy(inputStream1, tempFile1.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(inputStream2, tempFile2.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            renderer.getFontResolver().addFont(tempFile1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.getFontResolver().addFont(tempFile2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            URL url1 = new URL("classpath:/static/Manrope.ttf");
+            URL url2 = new URL("classpath:/static/Unbounded.ttf");
+            String path1 = url1.getPath();
+            String path2 = url2.getPath();
+            renderer.getFontResolver().addFont(path1, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont(path2, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             String htmlContent = generateHtml("qr_pdf.html", context);
             renderer.setDocumentFromString(htmlContent);
@@ -118,10 +103,12 @@ public class DocumentService {
 
         ITextRenderer renderer = new ITextRenderer();
 
-        File tempFontFile1 = createTempFontFile("/static/Manrope.ttf");
-        File tempFontFile2 = createTempFontFile("/static/Unbounded.ttf");
-        renderer.getFontResolver().addFont(tempFontFile1.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        renderer.getFontResolver().addFont(tempFontFile2.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            URL url1 = new URL("classpath:/static/Manrope.ttf");
+            URL url2 = new URL("classpath:/static/Unbounded.ttf");
+        String path1 = url1.getPath();
+        String path2 = url2.getPath();
+        renderer.getFontResolver().addFont(path1, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        renderer.getFontResolver().addFont(path2, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
         String htmlContent = generateHtml("badge.html", context);
         System.out.println(htmlContent);
@@ -235,20 +222,4 @@ public class DocumentService {
         context.setVariables(data);
         return templateEngine.process(templateFileName, context);
     }
-
-    private File createTempFontFile(String resourcePath) throws IOException {
-        ClassPathResource resource = new ClassPathResource(resourcePath);
-        InputStream inputStream = resource.getInputStream();
-        File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".ttf");
-        try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-        }
-        return tempFile;
-    }
-
-
 }
