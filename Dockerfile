@@ -29,7 +29,7 @@ WORKDIR /app
 
 # Копируем исполняемый JAR файл из этапа сборки
 COPY --from=build /app/target/events-0.0.1-SNAPSHOT.jar app.jar
-COPY src/main/resources/static/. /app/static/
+COPY src/main/resources /app/resources
 # Экспонируем порт, который использует ваше приложение
 EXPOSE 8080
 
