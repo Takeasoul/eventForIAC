@@ -176,6 +176,23 @@
 			</plugin>
 
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include> <!-- Включение других типов файлов -->
+					<include>**/*.properties</include>
+					<include>**/*.ttf</include> <!-- Включение файлов формата ttf -->
+					<include>**/*.docx</include> <!-- Включение файлов формата ttf -->
+					<include>**/*.html</include> <!-- Включение файлов формата ttf -->
+					<include>**/*.jpg</include> <!-- Включение файлов формата ttf -->
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
+
+
+
 
 </project>
