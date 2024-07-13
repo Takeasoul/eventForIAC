@@ -118,10 +118,10 @@ public class DocumentService {
 
         ITextRenderer renderer = new ITextRenderer();
 
-        URL fontResourceURL1 = getClass().getResource("/static/Manrope.ttf");
-        URL fontResourceURL2 = getClass().getResource("/static/Unbounded.ttf");
-        renderer.getFontResolver().addFont(fontResourceURL1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        renderer.getFontResolver().addFont(fontResourceURL2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        File tempFontFile1 = createTempFontFile("/static/Manrope.ttf");
+        File tempFontFile2 = createTempFontFile("/static/Unbounded.ttf");
+        renderer.getFontResolver().addFont(tempFontFile1.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        renderer.getFontResolver().addFont(tempFontFile2.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
         String htmlContent = generateHtml("badge.html", context);
         System.out.println(htmlContent);
@@ -235,4 +235,20 @@ public class DocumentService {
         context.setVariables(data);
         return templateEngine.process(templateFileName, context);
     }
+
+    private File createTempFontFile(String resourcePath) throws IOException {
+        ClassPathResource resource = new ClassPathResource(resourcePath);
+        InputStream inputStream = resource.getInputStream();
+        File tempFile = File.createTempFile(UUID.randomUUID().toString(), ".ttf");
+        try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+        return tempFile;
+    }
+
+
 }
