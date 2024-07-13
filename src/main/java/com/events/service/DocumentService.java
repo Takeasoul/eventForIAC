@@ -34,6 +34,8 @@ import java.io.*;
 
 import java.net.URL;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
@@ -66,10 +68,24 @@ public class DocumentService {
             context.put("qr_image",image);
 
             ITextRenderer renderer = new ITextRenderer();
-            URL fontResourceURL1 = getClass().getResource("/static/Manrope.ttf");
-            URL fontResourceURL2 = getClass().getResource("/static/Unbounded.ttf");
-            renderer.getFontResolver().addFont(fontResourceURL1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            renderer.getFontResolver().addFont(fontResourceURL2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Resource fontResource1 = new ClassPathResource("/static/Manrope.ttf");
+            InputStream inputStream1 = fontResource1.getInputStream();
+
+            Resource fontResource2 = new ClassPathResource("/static/Unbounded.ttf");
+            InputStream inputStream2 = fontResource2.getInputStream();
+
+            File tempDir = Files.createTempDirectory("fonts").toFile();
+
+            // Создаем временные файлы для копирования
+            File tempFile1 = new File(tempDir, "Manrope.ttf");
+            File tempFile2 = new File(tempDir, "Unbounded.ttf");
+
+        // Копируем данные из InputStream во временные файлы
+            Files.copy(inputStream1, tempFile1.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream2, tempFile2.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            renderer.getFontResolver().addFont(tempFile1.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont(tempFile2.getPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             String htmlContent = generateHtml("qr_pdf.html", context);
             renderer.setDocumentFromString(htmlContent);

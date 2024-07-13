@@ -172,26 +172,23 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.events.EventsApplication</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>**/*.xml</include> <!-- Включение XML файлов -->
-					<include>**/*.properties</include> <!-- Включение properties файлов -->
-					<include>**/*.ttf</include> <!-- Включение файлов формата TTF -->
-					<include>**/*.html</include> <!-- Включение файлов формата HTML -->
-				</includes>
-				<excludes>
-					<exclude>**/*.docx</exclude> <!-- Исключение файлов формата DOCX -->
-					<exclude>**/*.jpg</exclude> <!-- Исключение файлов формата JPG -->
-				</excludes>
-				<filtering>true</filtering> <!-- Фильтрация включена для всех файлов -->
-			</resource>
-		</resources>
+
 
 	</build>
 
