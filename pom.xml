@@ -180,16 +180,19 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*.xml</include> <!-- Включение других типов файлов -->
-					<include>**/*.properties</include>
-					<include>**/*.ttf</include> <!-- Включение файлов формата ttf -->
-					<include>**/*.docx</include> <!-- Включение файлов формата ttf -->
-					<include>**/*.html</include> <!-- Включение файлов формата ttf -->
-					<include>**/*.jpg</include> <!-- Включение файлов формата ttf -->
+					<include>**/*.xml</include> <!-- Включение XML файлов -->
+					<include>**/*.properties</include> <!-- Включение properties файлов -->
+					<include>**/*.ttf</include> <!-- Включение файлов формата TTF -->
+					<include>**/*.html</include> <!-- Включение файлов формата HTML -->
 				</includes>
-				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.docx</exclude> <!-- Исключение файлов формата DOCX -->
+					<exclude>**/*.jpg</exclude> <!-- Исключение файлов формата JPG -->
+				</excludes>
+				<filtering>true</filtering> <!-- Фильтрация включена для всех файлов -->
 			</resource>
 		</resources>
+
 	</build>
 
 
