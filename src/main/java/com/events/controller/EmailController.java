@@ -43,17 +43,7 @@ public class EmailController {
     private final EventService eventService;
 
     private final DocumentService documentService;
-    @GetMapping(value = "/simple-email/{user-email}")
-    public @ResponseBody ResponseEntity sendSimpleEmail(@PathVariable("user-email") String email) {
-        try {
-            emailService.sendSimpleEmail(email, "Welcome", "This is a welcome email for your!!");
-        } catch (MailException mailException) {
-            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
-            LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
-            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
-    }
+
     @GetMapping(value = "/{memberId}")
     public @ResponseBody ResponseEntity sendEmail(@PathVariable UUID memberId) throws IOException {
         Event_Member eventMember = eventService.findMemberById(memberId)
@@ -71,12 +61,24 @@ public class EmailController {
         data.put("position",eventMember.getPosition());
         data.put("company", eventMember.getCompany());
         data.put("event_date",event.getEvent_date());
-        data.put("status", "Участник");
+        data.put("status", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
         data.put("memberId",memberId);
         //ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
         Map<String, Object> templateContext = new HashMap<>();
+        // Вся инфа об участнике поступает в template
         templateContext.put("first_name", eventMember.getFirstname());
         templateContext.put("middlename", eventMember.getMiddlename());
+        templateContext.put("last_name", eventMember.getLastname());
+        templateContext.put("email", eventMember.getEmail());
+        templateContext.put("phone", eventMember.getPhone());
+        templateContext.put("position",eventMember.getPosition());
+        templateContext.put("company", eventMember.getCompany());
+        templateContext.put("member_role", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
+        // Вся инфа о мероприятии, которая поступает в template
+        templateContext.put("event_date",event.getEvent_date());
+        templateContext.put("event_name", event.getEvent_name());
+        templateContext.put("event_summary", event.getEvent_summary());
+        templateContext.put("event_adress", event.getAddress());
         AbstractEmailContext context = new EmailContext();
         context.setContext(templateContext);
         context.setTo(eventMember.getEmail());
@@ -95,7 +97,47 @@ public class EmailController {
         }
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
     }
-//    @GetMapping(value = "/simple-order-email/{user-email}")
+
+    @GetMapping(value = "/greetings/{memberId}")
+    public @ResponseBody ResponseEntity sendGreetingsEmail(@PathVariable UUID memberId) {
+        Event_Member eventMember = eventService.findMemberById(memberId)
+                .orElseThrow(() -> new RuntimeException("Event member not found"));
+        Event event = eventService.findById(eventMember.getEventId())
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        Map<String, Object> templateContext = new HashMap<>();
+
+        // Вся инфа об участнике поступает в template
+        templateContext.put("first_name", eventMember.getFirstname());
+        templateContext.put("middlename", eventMember.getMiddlename());
+        templateContext.put("last_name", eventMember.getLastname());
+        templateContext.put("email", eventMember.getEmail());
+        templateContext.put("phone", eventMember.getPhone());
+        templateContext.put("position",eventMember.getPosition());
+        templateContext.put("company", eventMember.getCompany());
+        templateContext.put("member_role", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
+        // Вся инфа о мероприятии, которая поступает в template
+        templateContext.put("event_date",event.getEvent_date());
+        templateContext.put("event_name", event.getEvent_name());
+        templateContext.put("event_summary", event.getEvent_summary());
+        templateContext.put("event_adress", event.getAddress());
+
+        AbstractEmailContext context = new EmailContext();
+        context.setContext(templateContext);
+        context.setTo(eventMember.getEmail());
+        context.setSubject("Регистрация на мероприятие: " + event.getEvent_name());
+        context.setTemplateLocation("greetings.html");
+        try {
+            emailService.sendMail(context);
+        } catch (MessagingException e) {
+            LOG.error("Error while sending out email..{}", e.getStackTrace());
+            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
+            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
+    }
+
+
+    //    @GetMapping(value = "/simple-order-email/{user-email}")
 //    public @ResponseBody ResponseEntity sendEmailAttachment(@PathVariable UUID memberId) throws IOException {
 //        Event_Member eventMember = eventService.findMemberById(memberId)
 //                .orElseThrow(() -> new RuntimeException("Event member not found"));
@@ -121,30 +163,16 @@ public class EmailController {
 //        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
 //    }
 
-
-    @GetMapping(value = "/greetings/{memberId}")
-    public @ResponseBody ResponseEntity sendGreetingsEmail(@PathVariable UUID memberId) {
-        Event_Member eventMember = eventService.findMemberById(memberId)
-                .orElseThrow(() -> new RuntimeException("Event member not found"));
-        Event event = eventService.findById(eventMember.getEventId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
-        Map<String, Object> templateContext = new HashMap<>();
-        templateContext.put("first_name", eventMember.getFirstname());
-        templateContext.put("middlename", eventMember.getMiddlename());
-        AbstractEmailContext context = new EmailContext();
-        context.setContext(templateContext);
-        context.setTo(eventMember.getEmail());
-        context.setSubject("Регистрация на мероприятие: " + event.getEvent_name());
-        context.setTemplateLocation("greetings.html");
-        try {
-            emailService.sendMail(context);
-        } catch (MessagingException e) {
-            LOG.error("Error while sending out email..{}", e.getStackTrace());
-            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
-            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
-    }
-
+    //    @GetMapping(value = "/simple-email/{user-email}")
+//    public @ResponseBody ResponseEntity sendSimpleEmail(@PathVariable("user-email") String email) {
+//        try {
+//            emailService.sendSimpleEmail(email, "Welcome", "This is a welcome email for your!!");
+//        } catch (MailException mailException) {
+//            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
+//            LOG.error("Error while sending out email..{}", mailException.fillInStackTrace());
+//            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
+//    }
 
 }

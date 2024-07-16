@@ -20,4 +20,5 @@ public class EventRegistrationDto {
     private String phone;
     private Boolean clubmember;
     private int event_id;
+    private UUID event_members_role_id;
 }

@@ -46,4 +46,8 @@ public class Event_Member {
 
     @Column(name = "event_id")
     private UUID eventId;
+
+    @Column(name = "event_members_role_id")
+    private UUID eventMembersRoleId;
+
 }

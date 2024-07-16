@@ -44,17 +44,17 @@ public class EmailService {
     }
 
 
-    public void sendEmailWithAttachment(String toAddress, String subject, String message, String attachment) throws MessagingException, FileNotFoundException {
-
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-        messageHelper.setTo(toAddress);
-        messageHelper.setSubject(subject);
-        messageHelper.setText(message);
-        //FileSystemResource file = new FileSystemResource(ResourceUtils.getFile(attachment));
-        //messageHelper.addAttachment("Purchase Order", file);
-        emailSender.send(mimeMessage);
-    }
+//    public void sendEmailWithAttachment(String toAddress, String subject, String message, String attachment) throws MessagingException, FileNotFoundException {
+//
+//        MimeMessage mimeMessage = emailSender.createMimeMessage();
+//        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+//        messageHelper.setTo(toAddress);
+//        messageHelper.setSubject(subject);
+//        messageHelper.setText(message);
+//        //FileSystemResource file = new FileSystemResource(ResourceUtils.getFile(attachment));
+//        //messageHelper.addAttachment("Purchase Order", file);
+//        emailSender.send(mimeMessage);
+//    }
 
     public void sendMailWithPdf(AbstractEmailContext emailContext, Map<String, Object> pdfContext) throws MessagingException, IOException, DocumentException {
         MimeMessage message = emailSender.createMimeMessage();

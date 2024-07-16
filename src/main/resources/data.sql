@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS event_schema.event_members (
     middlename VARCHAR(255),
     phone      VARCHAR(255),
     position   VARCHAR(255)
+    event_members_role_id UUID,
     );
 
 -- Установка владельца для таблицы event_members

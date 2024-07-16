@@ -40,6 +40,12 @@ public class EventController {
         return eventService.getAllEvents();
     }
 
+    @GetMapping("/members/allRoles")
+    public ResponseEntity<?> getAllRoles()
+    {
+        return eventService.getAllRoles();
+    }
+
     @PostMapping("/deleteEvent/{id}")
     public ResponseEntity<?> deleteEvent(@PathVariable UUID id){
         return eventService.deleteById(id);
@@ -123,4 +129,11 @@ public class EventController {
             return ResponseEntity.noContent().build();
         return ResponseEntity.ok(member);
     }
+
+    @PostMapping("/members/roles/add/{rolename}")
+    public ResponseEntity<?> addRole(@PathVariable String rolename) {
+        return eventService.addEventMemberRole(rolename);
+    }
+
+
 }

@@ -4,9 +4,11 @@ import com.events.DTO.EventCreateDto;
 import com.events.DTO.EventRegistrationDto;
 import com.events.entity.Event;
 import com.events.entity.Event_Member;
+import com.events.entity.Members_Roles;
 import com.events.exceptions.AppError;
 import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
+import com.events.repositories.MembersRolesRepository;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import io.micrometer.observation.Observation;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventMemberRepository eventMemberRepository;
+    private final MembersRolesRepository membersRolesRepository;
 
     public Event createNewEvent(EventCreateDto eventCreateDto) {
 
@@ -84,9 +87,24 @@ public class EventService {
         eventMember.setClubmember(eventRegistrationDto.getClubmember());
         eventMember.setApproved(null);
         eventMember.setEventId(id);
+        String role = "Участник";
+        System.out.println(role);
+        Members_Roles participantRole = membersRolesRepository.findByRole(role);
+        System.out.println("Found role: " + participantRole);
+        Iterable<Members_Roles> roles = membersRolesRepository.findAll();
+        if (participantRole != null) {
+            // Установить ID роли в объект eventMember
+            eventMember.setEventMembersRoleId(participantRole.getId());
 
-        Event_Member savedEventMember = eventMemberRepository.save(eventMember);
-        return ResponseEntity.ok(Collections.singletonMap("id", savedEventMember.getId()));
+            // Сохранить eventMember в репозитории
+            Event_Member savedEventMember = eventMemberRepository.save(eventMember);
+
+            // Вернуть успешный ответ с ID сохраненного eventMember
+            return ResponseEntity.ok(Collections.singletonMap("id", savedEventMember.getId()));
+        } else {
+            throw new RuntimeException("Role 'Участник' not found");
+        }
+
     }
 
     public void approvemember(UUID id) {
@@ -137,5 +155,21 @@ public class EventService {
         return ResponseEntity.ok(events);
     }
 
+    public ResponseEntity<?> addEventMemberRole(String rolename) {
 
+        Members_Roles newRole = new Members_Roles();
+        newRole.setRole(rolename);
+        membersRolesRepository.save(newRole);
+        return ResponseEntity.ok().build();
+    }
+
+    public String getRoleNameById(UUID id) {
+        membersRolesRepository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        return membersRolesRepository.findById(id).get().getRole();
+    }
+
+
+    public ResponseEntity<?> getAllRoles() {
+        return ResponseEntity.ok(membersRolesRepository.findAll());
+    }
 }
