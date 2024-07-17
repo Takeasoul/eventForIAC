@@ -1,13 +1,12 @@
 package com.events.templates;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -21,24 +20,17 @@ import java.util.List;
 @RequestMapping("/api/templates")
 public class TemplateController {
 
-    private final ResourceLoader resourceLoader;
-
-    @Autowired
-    public TemplateController(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
+    private final String templatesPath = "templates/"; // Путь к директории с шаблонами
 
     @GetMapping
     public ResponseEntity<List<String>> getAllTemplateNames() {
         List<String> templateNames = new ArrayList<>();
         try {
-            // Получаем все ресурсы из папки resources/templates
-            Resource resource = resourceLoader.getResource("classpath:/templates/");
+            Resource resource = new ClassPathResource(templatesPath);
             Path path = Paths.get(resource.getURI());
             Files.list(path).filter(Files::isRegularFile).forEach(file -> {
                 templateNames.add(file.getFileName().toString());
             });
-
             return ResponseEntity.ok(templateNames);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -46,44 +38,41 @@ public class TemplateController {
     }
 
     @GetMapping("/{templateName}")
-    public ResponseEntity<byte[]> getTemplate(@PathVariable String templateName) {
+    public ResponseEntity<String> getTemplate(@PathVariable String templateName) {
         try {
-            // Загружаем указанный шаблон из папки resources/templates
-            Resource resource = resourceLoader.getResource("classpath:/templates/" + templateName);
-            byte[] data = StreamUtils.copyToByteArray(resource.getInputStream());
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.TEXT_HTML);
-            headers.setContentDispositionFormData("attachment", templateName);
-
-            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+            Resource resource = new ClassPathResource(templatesPath + templateName);
+            byte[] data = Files.readAllBytes(resource.getFile().toPath());
+            String htmlContent = new String(data);
+            return ResponseEntity.ok(htmlContent);
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/save/{templateName}")
-    public ResponseEntity<Void> saveTemplate(@PathVariable String templateName, @RequestBody String htmlContent) {
-        // Логика для сохранения измененного шаблона
-        // Для примера будем выводить в консоль
-        System.out.println("Сохранение шаблона: " + templateName);
-        System.out.println("Содержимое: " + htmlContent);
-        // Реализуйте логику для сохранения содержимого
-        return ResponseEntity.ok().build();
+    @PostMapping("/save/{templateId}")
+    public ResponseEntity<Void> saveTemplate(@PathVariable String templateId, @RequestBody String htmlContent) {
+        try {
+            Path path = Paths.get(templatesPath + templateId);
+            Files.write(path, htmlContent.getBytes());
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @GetMapping("/download/{templateName}")
-    public ResponseEntity<byte[]> downloadTemplate(@PathVariable String templateName) {
+    @GetMapping("/download/{templateId}")
+    public ResponseEntity<byte[]> downloadTemplate(@PathVariable String templateId) {
         try {
-            // Загружаем указанный шаблон из папки resources/templates
-            Resource resource = resourceLoader.getResource("classpath:/templates/" + templateName);
-            byte[] data = StreamUtils.copyToByteArray(resource.getInputStream());
+            Resource resource = new ClassPathResource(templatesPath + templateId);
+            byte[] data = Files.readAllBytes(resource.getFile().toPath());
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", templateName);
+            headers.setContentType(MediaType.TEXT_HTML);
+            headers.setContentDispositionFormData("attachment", templateId);
 
-            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(data);
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
         }
