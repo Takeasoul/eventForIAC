@@ -23,6 +23,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -171,5 +173,21 @@ public class EventService {
 
     public ResponseEntity<?> getAllRoles() {
         return ResponseEntity.ok(membersRolesRepository.findAll());
+    }
+
+    public void closeRegistry()
+    {
+        LocalDate currentDate = LocalDate.now();
+        List<Event> events = (List<Event>) eventRepository.findAll();
+        for(Event event: events)
+        {
+            if(event.getReg_open())
+            {
+                if(currentDate.isAfter(event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))//ЗАМЕНИТЬ НА ДАТУ ОКОНЧАНИЯ РЕГИСТРАЦИИ
+                {
+                    System.out.println("Кирилл");
+                }
+            }
+        }
     }
 }
