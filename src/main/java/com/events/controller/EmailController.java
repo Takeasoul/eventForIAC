@@ -3,7 +3,6 @@ package com.events.controller;
 
 import com.events.entity.Event;
 import com.events.entity.Event_Member;
-import com.events.generator.QRCodeGenerator;
 import com.events.service.DocumentService;
 import com.events.service.EmailService;
 import com.events.service.EventService;
@@ -14,16 +13,12 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +70,9 @@ public class EmailController {
         templateContext.put("company", eventMember.getCompany());
         templateContext.put("member_role", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
         // Вся инфа о мероприятии, которая поступает в template
-        templateContext.put("event_date",event.getEvent_date());
+
+        //templateContext.put("event_date",event.getEvent_date());
+
         templateContext.put("event_name", event.getEvent_name());
         templateContext.put("event_summary", event.getEvent_summary());
         templateContext.put("event_adress", event.getAddress());
@@ -83,7 +80,7 @@ public class EmailController {
         context.setContext(templateContext);
         context.setTo(eventMember.getEmail());
         context.setSubject("Приглашение на меропритие: "+ event.getEvent_name());
-        context.setTemplateLocation("email_message.html");
+        context.setTemplateLocation("templates/email_message.html");
         try {
             emailService.sendMailWithPdf(context,data);
         } catch (MailException | MessagingException mailException) {
@@ -104,36 +101,36 @@ public class EmailController {
                 .orElseThrow(() -> new RuntimeException("Event member not found"));
         Event event = eventService.findById(eventMember.getEventId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        Map<String, Object> templateContext = new HashMap<>();
 
-        // Вся инфа об участнике поступает в template
-        templateContext.put("first_name", eventMember.getFirstname());
+        Map<String, Object> templateContext = new HashMap<>();
+        // Populate template context with member and event details
+        templateContext.put("имя", eventMember.getFirstname());
         templateContext.put("middlename", eventMember.getMiddlename());
         templateContext.put("last_name", eventMember.getLastname());
         templateContext.put("email", eventMember.getEmail());
         templateContext.put("phone", eventMember.getPhone());
-        templateContext.put("position",eventMember.getPosition());
+        templateContext.put("position", eventMember.getPosition());
         templateContext.put("company", eventMember.getCompany());
         templateContext.put("member_role", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
-        // Вся инфа о мероприятии, которая поступает в template
-        templateContext.put("event_date",event.getEvent_date());
+
+        templateContext.put("event_date", event.getEvent_date());
         templateContext.put("event_name", event.getEvent_name());
         templateContext.put("event_summary", event.getEvent_summary());
-        templateContext.put("event_adress", event.getAddress());
+        templateContext.put("event_address", event.getAddress());
 
         AbstractEmailContext context = new EmailContext();
         context.setContext(templateContext);
         context.setTo(eventMember.getEmail());
         context.setSubject("Регистрация на мероприятие: " + event.getEvent_name());
-        context.setTemplateLocation("greetings.html");
+        context.setTemplateLocation("templates/greetings.html");
+
         try {
             emailService.sendMail(context);
+            return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
         } catch (MessagingException e) {
-            LOG.error("Error while sending out email..{}", e.getStackTrace());
-            LOG.error("Error while sending out email..{}", e.fillInStackTrace());
+            LOG.error("Error while sending out email..", e);
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
     }
 
 

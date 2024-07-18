@@ -2,6 +2,9 @@ package com.events.service;
 
 
 import com.events.utils.mail.AbstractEmailContext;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 import com.lowagie.text.DocumentException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -20,7 +23,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -61,9 +66,16 @@ public class EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
-        Context context = new Context();
-        context.setVariables(emailContext.getContext());
-        String emailContent = templateEngine.process(emailContext.getTemplateLocation(), context);
+
+        // Create Mustache context
+        Map<String, Object> context = new HashMap<>(emailContext.getContext());
+        // Compile Mustache template
+        MustacheFactory mf = new DefaultMustacheFactory();
+        Mustache mustache = mf.compile(emailContext.getTemplateLocation());
+        // Execute template rendering
+        StringWriter writer = new StringWriter();
+        mustache.execute(writer, context);
+        String emailContent = writer.toString();
 
         mimeMessageHelper.setTo(emailContext.getTo());
         mimeMessageHelper.setSubject(emailContext.getSubject());
@@ -81,13 +93,19 @@ public class EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
-        Context context = new Context();
-        context.setVariables(emailContext.getContext());
-        String emailContent = templateEngine.process(emailContext.getTemplateLocation(), context);
+
+        // Create Mustache context
+        Map<String, Object> context = new HashMap<>(emailContext.getContext());
+        // Compile Mustache template
+        MustacheFactory mf = new DefaultMustacheFactory();
+        Mustache mustache = mf.compile(emailContext.getTemplateLocation());
+        // Execute template rendering
+        StringWriter writer = new StringWriter();
+        mustache.execute(writer, context);
+        String emailContent = writer.toString();
 
         mimeMessageHelper.setTo(emailContext.getTo());
         mimeMessageHelper.setSubject(emailContext.getSubject());
-        //mimeMessageHelper.setFrom(email.getFrom());
         mimeMessageHelper.setText(emailContent, true);
 
         emailSender.send(message);

@@ -7,6 +7,9 @@ import com.events.entity.Event_Member;
 import com.events.generator.QRCodeGenerator;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
 import lombok.RequiredArgsConstructor;
@@ -218,8 +221,13 @@ public class DocumentService {
     }
 
     private String generateHtml(String templateFileName, Map<String, Object> data) {
-        Context context = new Context();
-        context.setVariables(data);
-        return templateEngine.process(templateFileName, context);
+
+
+        MustacheFactory mf = new DefaultMustacheFactory();
+        Mustache mustache = mf.compile("templates/" + templateFileName);
+        // Execute template rendering
+        StringWriter writer = new StringWriter();
+        mustache.execute(writer, data);
+        return writer.toString();
     }
 }
