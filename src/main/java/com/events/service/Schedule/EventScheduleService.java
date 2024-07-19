@@ -26,7 +26,7 @@ public class EventScheduleService {
     }
 
     @Scheduled(cron = "${interval-delete-event-cron}")
-    public void changeRegistryStatus(){
+    public void changeRegistrationStatus(){
         LocalDate currentDate = LocalDate.now();
 
         List<Event> events = StreamSupport
