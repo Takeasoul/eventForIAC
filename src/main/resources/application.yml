@@ -7,7 +7,7 @@ spring:
   application:
     name: events
   datasource:
-    url: jdbc:postgresql://77.222.38.40:5432/event
+    url: jdbc:postgresql://77.222.38.40:5432/postgres
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -43,3 +43,5 @@ logging:
       springframework:
         web: DEBUG
         security: DEBUG
+
+interval-delete-event-cron: 0 * * * * * # секунда минута час день месяца, месяц, день недели, год

@@ -175,19 +175,5 @@ public class EventService {
         return ResponseEntity.ok(membersRolesRepository.findAll());
     }
 
-    public void closeRegistry()
-    {
-        LocalDate currentDate = LocalDate.now();
-        List<Event> events = (List<Event>) eventRepository.findAll();
-        for(Event event: events)
-        {
-            if(event.getReg_open())
-            {
-                if(currentDate.isAfter(event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))//ЗАМЕНИТЬ НА ДАТУ ОКОНЧАНИЯ РЕГИСТРАЦИИ
-                {
-                    System.out.println("Кирилл");
-                }
-            }
-        }
-    }
+
 }
