@@ -37,12 +37,12 @@ public class EventScheduleService {
                 .peek(event -> {
                   //  LocalDate eventEnd = event.getEndRegistration().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                  //   LocalDate eventStart = event.getStartRegistration().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDate eventEnd = event.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate eventEnd = event.getDate().atZone(ZoneId.systemDefault()).toLocalDate();
 
-                    if (event.getRegOpening() && currentDate.isAfter(eventEnd)) {//!!!!!
-                        event.setRegOpening(false);
-                    } else if (!event.getRegOpening() && currentDate.isBefore(eventEnd)) {
-                        event.setRegOpening(true);
+                    if (event.getRegOpen() && currentDate.isAfter(eventEnd)) {//!!!!!
+                        event.setRegOpen(false);
+                    } else if (!event.getRegOpen() && currentDate.isBefore(eventEnd)) {
+                        event.setRegOpen(true);
                     }
                 })
                 .toList();
