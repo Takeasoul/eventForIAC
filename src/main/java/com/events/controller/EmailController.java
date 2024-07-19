@@ -2,8 +2,7 @@ package com.events.controller;
 
 
 import com.events.entity.Event;
-import com.events.entity.Event_Member;
-import com.events.generator.QRCodeGenerator;
+import com.events.entity.EventMember;
 import com.events.service.DocumentService;
 import com.events.service.EmailService;
 import com.events.service.EventService;
@@ -14,16 +13,12 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,13 +41,13 @@ public class EmailController {
 
     @GetMapping(value = "/{memberId}")
     public @ResponseBody ResponseEntity sendEmail(@PathVariable UUID memberId) throws IOException {
-        Event_Member eventMember = eventService.findMemberById(memberId)
+        EventMember eventMember = eventService.findMemberById(memberId)
                 .orElseThrow(() -> new RuntimeException("Event member not found"));
         Event event = eventService.findById(eventMember.getEventId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         Map<String, Object> data = new HashMap<>();
-        data.put("event_name", event.getEvent_name());
-        data.put("event_id", event.getEvent_id());
+        data.put("event_name", event.getName());
+        data.put("event_id", event.getId());
         data.put("first_name", eventMember.getFirstname());
         data.put("middlename", eventMember.getMiddlename());
         data.put("last_name", eventMember.getLastname());
@@ -60,7 +55,7 @@ public class EmailController {
         data.put("phone", eventMember.getPhone());
         data.put("position",eventMember.getPosition());
         data.put("company", eventMember.getCompany());
-        data.put("event_date",event.getEvent_date());
+        data.put("event_date",event.getDate());
         data.put("status", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
         data.put("memberId",memberId);
         //ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
@@ -75,14 +70,14 @@ public class EmailController {
         templateContext.put("company", eventMember.getCompany());
         templateContext.put("member_role", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
         // Вся инфа о мероприятии, которая поступает в template
-        templateContext.put("event_date",event.getEvent_date());
-        templateContext.put("event_name", event.getEvent_name());
-        templateContext.put("event_summary", event.getEvent_summary());
+        templateContext.put("event_date",event.getDate());
+        templateContext.put("event_name", event.getName());
+        templateContext.put("event_summary", event.getSummary());
         templateContext.put("event_adress", event.getAddress());
         AbstractEmailContext context = new EmailContext();
         context.setContext(templateContext);
         context.setTo(eventMember.getEmail());
-        context.setSubject("Приглашение на меропритие: "+ event.getEvent_name());
+        context.setSubject("Приглашение на меропритие: "+ event.getName());
         context.setTemplateLocation("email_message.html");
         try {
             emailService.sendMailWithPdf(context,data);
@@ -100,7 +95,7 @@ public class EmailController {
 
     @GetMapping(value = "/greetings/{memberId}")
     public @ResponseBody ResponseEntity sendGreetingsEmail(@PathVariable UUID memberId) {
-        Event_Member eventMember = eventService.findMemberById(memberId)
+        EventMember eventMember = eventService.findMemberById(memberId)
                 .orElseThrow(() -> new RuntimeException("Event member not found"));
         Event event = eventService.findById(eventMember.getEventId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));
@@ -116,15 +111,15 @@ public class EmailController {
         templateContext.put("company", eventMember.getCompany());
         templateContext.put("member_role", eventService.getRoleNameById(eventMember.getEventMembersRoleId()));
         // Вся инфа о мероприятии, которая поступает в template
-        templateContext.put("event_date",event.getEvent_date());
-        templateContext.put("event_name", event.getEvent_name());
-        templateContext.put("event_summary", event.getEvent_summary());
+        templateContext.put("event_date",event.getDate());
+        templateContext.put("event_name", event.getName());
+        templateContext.put("event_summary", event.getSummary());
         templateContext.put("event_adress", event.getAddress());
 
         AbstractEmailContext context = new EmailContext();
         context.setContext(templateContext);
         context.setTo(eventMember.getEmail());
-        context.setSubject("Регистрация на мероприятие: " + event.getEvent_name());
+        context.setSubject("Регистрация на мероприятие: " + event.getName());
         context.setTemplateLocation("greetings.html");
         try {
             emailService.sendMail(context);

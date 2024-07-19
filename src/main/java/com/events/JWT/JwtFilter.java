@@ -128,7 +128,7 @@ public class JwtFilter extends GenericFilterBean {
 
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
-            return event.getOrgid().equals(userId);
+            return event.getOrgId().equals(userId);
         }
         return true; // Возвращаем true, если событие не найдено
     }

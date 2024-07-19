@@ -3,12 +3,11 @@ package com.events.controller;
 import com.events.DTO.EventCreateDto;
 import com.events.DTO.EventRegistrationDto;
 import com.events.entity.Event;
-import com.events.entity.Event_Member;
+import com.events.entity.EventMember;
 import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
 import com.events.service.EventService;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.sl.draw.geom.GuideIf;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,7 +81,7 @@ public class EventController {
 
     @GetMapping("/{id}/members")
     public ResponseEntity<?> getMembers(@PathVariable UUID id) {
-        List<Event_Member> members = eventService.findMembersByEventId(id);
+        List<EventMember> members = eventService.findMembersByEventId(id);
         if (members.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -124,7 +123,7 @@ public class EventController {
     public ResponseEntity<?> getMemberInfo(@PathVariable UUID id)
     {
         System.out.println("Зашел" + id);
-        Optional<Event_Member> member = eventService.findMemberById(id);
+        Optional<EventMember> member = eventService.findMemberById(id);
         if(member.isEmpty())
             return ResponseEntity.noContent().build();
         return ResponseEntity.ok(member);

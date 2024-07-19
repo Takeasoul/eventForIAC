@@ -3,7 +3,7 @@ package com.events.service;
 
 import com.deepoove.poi.XWPFTemplate;
 import com.events.entity.Event;
-import com.events.entity.Event_Member;
+import com.events.entity.EventMember;
 import com.events.generator.QRCodeGenerator;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -81,12 +81,12 @@ public class DocumentService {
 
     }
 
-    public  ByteArrayInputStream generatePdfBadges(List<Event_Member> members, String eventName)
+    public  ByteArrayInputStream generatePdfBadges(List<EventMember> members, String eventName)
             throws DocumentException, IOException {
 
-        List<ArrayList<Event_Member>> members_pairs = new ArrayList<>();
+        List<ArrayList<EventMember>> members_pairs = new ArrayList<>();
         for(int i = 0; i < members.size(); i += 2){
-            ArrayList<Event_Member> pair = new ArrayList<>();
+            ArrayList<EventMember> pair = new ArrayList<>();
             pair.add(members.get(i));
             if (i+1 < members.size()){
                 pair.add(members.get(i+1));
@@ -120,7 +120,7 @@ public class DocumentService {
 
     }
 
-    public  ByteArrayInputStream generatePdf(String qrFilename, Event_Member eventMember, Optional<Event> event) {
+    public  ByteArrayInputStream generatePdf(String qrFilename, EventMember eventMember, Optional<Event> event) {
         try {
             PDDocument pdDoc = new PDDocument();
             PDPage page = new PDPage();
@@ -139,7 +139,7 @@ public class DocumentService {
                 cs.newLineAtOffset(20, 750);
                 String eventName;
                 if (event.isPresent()) {
-                    eventName = event.get().getEvent_name();
+                    eventName = event.get().getName();
                 }
                 else  eventName = "ОШИБКА";
 
@@ -169,7 +169,7 @@ public class DocumentService {
             InvalidFormatException {
             ByteArrayOutputStream bis = new ByteArrayOutputStream();
 
-            Event_Member eventMember = eventService.findEventMemberById(eventMemberId);
+            EventMember eventMember = eventService.findEventMemberById(eventMemberId);
             if (eventMember == null){
                 return null;
             }
@@ -181,7 +181,7 @@ public class DocumentService {
                 put("first_name", eventMember.getFirstname());
                 put("last_name", eventMember.getLastname());
                 put("role", "Участник");
-                put("event", event.getEvent_name());
+                put("event", event.getName());
             }}).writeAndClose(bis);
 
             return new ByteArrayInputStream(bis.toByteArray());
@@ -193,7 +193,7 @@ public class DocumentService {
             InvalidFormatException {
         ByteArrayOutputStream bis = new ByteArrayOutputStream();
 
-        List<Event_Member> members = new ArrayList<>();
+        List<EventMember> members = new ArrayList<>();
 
         members = eventService.findMembersByEventId(eventId);
 

@@ -3,13 +3,12 @@ package com.events.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "event_members")
-public class Event_Member {
+public class EventMember {
 
 
     @Id

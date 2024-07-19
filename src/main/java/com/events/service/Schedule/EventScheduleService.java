@@ -35,12 +35,14 @@ public class EventScheduleService {
 
         List<Event> updatedEvents = events.stream()
                 .peek(event -> {
-                    LocalDate eventEnd = event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDate eventStart = event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    if (event.getReg_open() && currentDate.isAfter(eventStart)) {
-                        event.setReg_open(false);
-                    } else if (!event.getReg_open() && currentDate.isBefore(eventEnd)) {
-                        event.setReg_open(true);
+                  //  LocalDate eventEnd = event.getEndRegistration().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                 //   LocalDate eventStart = event.getStartRegistration().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate eventEnd = event.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                    if (event.getRegOpening() && currentDate.isAfter(eventEnd)) {//!!!!!
+                        event.setRegOpening(false);
+                    } else if (!event.getRegOpening() && currentDate.isBefore(eventEnd)) {
+                        event.setRegOpening(true);
                     }
                 })
                 .toList();

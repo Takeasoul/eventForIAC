@@ -1,8 +1,7 @@
 package com.events.controller;
 
 import com.events.entity.Event;
-import com.events.entity.Event_Member;
-import com.events.repositories.EventMemberRepository;
+import com.events.entity.EventMember;
 
 import com.events.service.DocumentService;
 
@@ -69,12 +68,12 @@ public class DocumentController {
     @GetMapping("/pdf/qr")
     public ResponseEntity<InputStreamResource> generatePdf(@RequestParam UUID memberId)
             throws IOException, DocumentException {
-        Event_Member eventMember = eventService.findMemberById(memberId)
+        EventMember eventMember = eventService.findMemberById(memberId)
                 .orElseThrow(() -> new RuntimeException("Event member not found"));
         Event event = eventService.findById(eventMember.getEventId())
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         Map<String, Object> data = new HashMap<>();
-        data.put("event_name", event.getEvent_name());
+        data.put("event_name", event.getName());
         data.put("first_name", eventMember.getFirstname());
         data.put("middlename", eventMember.getMiddlename());
         data.put("last_name", eventMember.getLastname());
@@ -82,7 +81,7 @@ public class DocumentController {
         data.put("phone", eventMember.getPhone());
         data.put("position",eventMember.getPosition());
         data.put("company", eventMember.getCompany());
-        data.put("event_date",event.getEvent_date());
+        data.put("event_date",event.getDate());
         data.put("status", "Участник");
         data.put("memberId",memberId);
         //ByteArrayInputStream bis = documentService.generatePdf("qr.png", eventMember, eventService.findById(eventMember.getEventId()));
@@ -101,13 +100,13 @@ public class DocumentController {
             throws IOException, DocumentException {
         Event event = eventService.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
-        List<Event_Member> members = eventService.findApprovedMembersByEventId(eventId,true);
+        List<EventMember> members = eventService.findApprovedMembersByEventId(eventId,true);
         if (members.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Участники мероприятия не найдены");
         }
 
-        ByteArrayInputStream bis = documentService.generatePdfBadges(members,event.getEvent_name());
+        ByteArrayInputStream bis = documentService.generatePdfBadges(members,event.getName());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=badges.pdf");
         headers.setContentType(MediaType.APPLICATION_PDF);

@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface EventRepository extends CrudRepository<Event, UUID> {
 
 
-    List<Event> findByOrgid(UUID id);
-    
+    List<Event> findByOrgId(UUID id);
+
 }
