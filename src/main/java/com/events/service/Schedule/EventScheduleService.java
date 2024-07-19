@@ -35,10 +35,11 @@ public class EventScheduleService {
 
         List<Event> updatedEvents = events.stream()
                 .peek(event -> {
-                    LocalDate eventDate = event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();//добавить вторую дату и изменить на даты открытия и закрытия
-                    if (event.getReg_open() && currentDate.isAfter(eventDate)) {
+                    LocalDate eventEnd = event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate eventStart = event.getEvent_date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    if (event.getReg_open() && currentDate.isAfter(eventStart)) {
                         event.setReg_open(false);
-                    } else if (!event.getReg_open() && currentDate.isBefore(eventDate)) {
+                    } else if (!event.getReg_open() && currentDate.isBefore(eventEnd)) {
                         event.setReg_open(true);
                     }
                 })
@@ -46,7 +47,6 @@ public class EventScheduleService {
         if(!updatedEvents.isEmpty())
             eventRepository.saveAll(updatedEvents);
 
-        System.out.println(updatedEvents);
     }
 
 }

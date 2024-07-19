@@ -35,5 +35,11 @@ public class Event {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "start_registration")
+    private Date startRegistration;
+
+    @Column(name = "end_registration")
+    private Date endRegistration;
+
 
 }
