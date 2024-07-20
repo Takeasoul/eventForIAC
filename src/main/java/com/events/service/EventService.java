@@ -4,7 +4,7 @@ import com.events.DTO.EventCreateDto;
 import com.events.DTO.EventRegistrationDto;
 import com.events.entity.Event;
 import com.events.entity.EventMember;
-import com.events.entity.Members_Roles;
+import com.events.entity.MembersRoles;
 import com.events.exceptions.AppError;
 import com.events.repositories.EventMemberRepository;
 import com.events.repositories.EventRepository;
@@ -81,9 +81,9 @@ public class EventService {
         eventMember.setEventId(id);
         String role = "Участник";
         System.out.println(role);
-        Members_Roles participantRole = membersRolesRepository.findByRole(role);
+        MembersRoles participantRole = membersRolesRepository.findByRole(role);
         System.out.println("Found role: " + participantRole);
-        Iterable<Members_Roles> roles = membersRolesRepository.findAll();
+        Iterable<MembersRoles> roles = membersRolesRepository.findAll();
         if (participantRole != null) {
             // Установить ID роли в объект eventMember
             eventMember.setEventMembersRoleId(participantRole.getId());
@@ -149,7 +149,7 @@ public class EventService {
 
     public ResponseEntity<?> addEventMemberRole(String rolename) {
 
-        Members_Roles newRole = new Members_Roles();
+        MembersRoles newRole = new MembersRoles();
         newRole.setRole(rolename);
         membersRolesRepository.save(newRole);
         return ResponseEntity.ok().build();
